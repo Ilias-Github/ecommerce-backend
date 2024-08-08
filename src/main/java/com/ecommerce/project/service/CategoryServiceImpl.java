@@ -41,18 +41,13 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public String updateCategory(Long categoryId, String newCategoryName) {
-        List<Category> categories = categoryRepository.findAll();
+        // Controleer of deze category bestaat, anders exception
+        Category category = categoryRepository
+                .findById(categoryId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
 
-        Category category = categories
-                .stream()
-                .filter(c -> c.getCategoryId().equals(categoryId))
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-        String oldCategoryName = category.getCategoryName();
         category.setCategoryName(newCategoryName);
         categoryRepository.save(category);
-
-        return "Succesfully updated category " + oldCategoryName + " to " + category.getCategoryName();
+        return "Successfully updated category with ID " + categoryId + " to " + newCategoryName;
     }
 }
