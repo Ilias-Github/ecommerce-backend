@@ -30,18 +30,13 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public String deleteCategory(Long categoryId) {
-        // Haal alle categories zodat deze doorzocht kan worden
-        List<Category> categories = categoryRepository.findAll();
-        // Om een categorie te verwijderen moet eerst uitgezocht worden welk object in de lijst verwijderd dient te worden
-        // Verwijderen aan de hand van alleen het id werkt niet
-        Category category = categories
-                .stream()
-                .filter(c -> c.getCategoryId().equals(categoryId))
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        // Controleer of deze category bestaat, anders exception
+        Category category = categoryRepository
+                .findById(categoryId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
 
-        categoryRepository.delete(category);
-        return "Successfully removed category " + category.getCategoryName();
+        categoryRepository.deleteById(categoryId);
+        return "Successfully removed category with ID " + categoryId;
     }
 
     @Override
