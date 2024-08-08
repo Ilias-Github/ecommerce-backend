@@ -38,4 +38,18 @@ public class CategoryServiceImpl implements ICategoryService {
         categories.remove(category);
         return "Successfully removed category " + category.getCategoryName();
     }
+
+    @Override
+    public String updateCategory(Long categoryId, String newCategoryName) {
+        Category category = categories
+                .stream()
+                .filter(c -> c.getCategoryId().equals(categoryId))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        String oldCategoryName = category.getCategoryName();
+        category.setCategoryName(newCategoryName);
+
+        return "Succesfully updated category " + oldCategoryName + " to " + category.getCategoryName();
+    }
 }
