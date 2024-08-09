@@ -7,16 +7,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 
+// Implementatie van de service laag door gebruik te maken van de category interface. Hierin bevindt zich alle business
+// logic (aka alle functionaliteit wat betreft de category)
 @Service
 public class CategoryServiceImpl implements ICategoryService {
-    private List<Category> categories = new ArrayList<>();
-    private Long nextId = 1L;
-
     @Autowired
     private ICategoryRepository categoryRepository;
+
     @Override
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
@@ -35,6 +34,7 @@ public class CategoryServiceImpl implements ICategoryService {
                 .findById(categoryId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
 
+        // Verwijder de category gebasseerd op het meegegeven ID
         categoryRepository.deleteById(categoryId);
         return "Successfully removed category with ID " + categoryId;
     }
@@ -46,7 +46,10 @@ public class CategoryServiceImpl implements ICategoryService {
                 .findById(categoryId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
 
+        // Zet de category name van de categorie die opgehaald is
         category.setCategoryName(newCategoryName);
+
+        // Sla deze geupdatet category op in de database
         categoryRepository.save(category);
         return "Successfully updated category with ID " + categoryId + " to " + newCategoryName;
     }

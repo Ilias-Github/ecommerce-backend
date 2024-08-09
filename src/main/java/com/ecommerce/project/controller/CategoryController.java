@@ -10,10 +10,16 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+// Geeft bij Spring Boot aan dat het een Controller betreft en dat alle endpoints dezelfde pattern hebben
+//
+// De try-catches zorgen ervoor dat de juiste status codes en messages worden gegenereerd.
 @RestController
 @RequestMapping("api/")
 public class CategoryController {
 
+    // Spring maakt gebruik van dependency injection bij runtime waarbij de juiste bean wordt geïnjecteerd in het
+    // attribuut. De interface zorgt voor loose coupling waardoor meerdere implementaties mogelijk zijn en minimale
+    // aanpassingen gemaakt hoeven te worden in de code.
     @Autowired
     private ICategoryService categoryService;
 
@@ -30,6 +36,7 @@ public class CategoryController {
     @PostMapping("public/categories")
     public ResponseEntity<String> CreateCategory(@RequestBody Category category) {
         try {
+            // Sla de status op bij een succes en toon dit aan de end user
             String status = categoryService.createCategory(category);
             return new ResponseEntity<>(status, HttpStatus.CREATED);
         } catch (ResponseStatusException e) {
