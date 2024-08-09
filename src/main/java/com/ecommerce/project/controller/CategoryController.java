@@ -2,6 +2,7 @@ package com.ecommerce.project.controller;
 
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.service.ICategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +34,11 @@ public class CategoryController {
         }
     }
 
+    // De @Valid annotation controleert of de constraints die gezet zijn in het object worden nageleefd. Als dat niet
+    // het geval is. Dan wordt er gekeken waarom de constraints niet zijn nageleefd en wordt de juiste status code terug
+    // gegeven.
     @PostMapping("public/categories")
-    public ResponseEntity<String> CreateCategory(@RequestBody Category category) {
+    public ResponseEntity<String> CreateCategory(@Valid @RequestBody Category category) {
         try {
             // Sla de status op bij een succes en toon dit aan de end user
             String status = categoryService.createCategory(category);
@@ -59,7 +63,7 @@ public class CategoryController {
         try {
             String status = categoryService.updateCategory(categoryId, category.getCategoryName());
             return new ResponseEntity<>(status, HttpStatus.OK);
-        } catch(ResponseStatusException e) {
+        } catch (ResponseStatusException e) {
             return new ResponseEntity<>(e.getReason(), e.getStatusCode());
         }
     }
