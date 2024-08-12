@@ -37,4 +37,11 @@ public class MyGlobalExceptionHandler {
         // Dit maakt het mogelijk om de HTTP-responses te configureren
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
+    // Vangt de ResourceNotFoundException op die de controllers geven.
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> myResourceNotFoundException(ResourceNotFoundException e) {
+        String message = e.getMessage();
+        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+    }
 }
