@@ -1,5 +1,6 @@
 package com.ecommerce.project.service;
 
+import com.ecommerce.project.exceptions.ResourceNotFoundException;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.repositories.ICategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class CategoryServiceImpl implements ICategoryService {
         // Controleer of deze category bestaat, anders exception
         Category category = categoryRepository
                 .findById(categoryId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
 
         // Verwijder de category gebasseerd op het meegegeven ID
         categoryRepository.deleteById(categoryId);
@@ -44,7 +45,7 @@ public class CategoryServiceImpl implements ICategoryService {
         // Controleer of deze category bestaat, anders exception
         Category category = categoryRepository
                 .findById(categoryId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
 
         // Zet de category name van de categorie die opgehaald is
         category.setCategoryName(newCategoryName);
