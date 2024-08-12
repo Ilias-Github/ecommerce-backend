@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,5 +34,6 @@ public class Category {
     // checkt ook of een veld geen whitespace characters bevat. Onderwater voert het de trim functie uit om alle white
     // space characters te verwijderen.
     @NotBlank
+    @Size(min = 5, message = "Category name must contain at least 5 characters")
     private String categoryName;
 }
