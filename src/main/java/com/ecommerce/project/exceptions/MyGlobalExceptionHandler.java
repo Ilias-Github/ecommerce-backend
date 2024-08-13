@@ -28,7 +28,7 @@ public class MyGlobalExceptionHandler {
         // Voor elke exception, haal de veldnaam en de error message op en sla deze op in de HashMap
         e.getBindingResult().getAllErrors().forEach(err -> {
             // De error wordt omgezet naar een FieldError zodat wij kunnen achterhalen om welk veld het gaat
-            String fieldName = ((FieldError)err).getField();
+            String fieldName = ((FieldError) err).getField();
             String message = err.getDefaultMessage();
             response.put(fieldName, message);
         });

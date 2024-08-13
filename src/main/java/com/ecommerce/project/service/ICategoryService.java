@@ -1,10 +1,7 @@
 package com.ecommerce.project.service;
 
 import com.ecommerce.project.model.Category;
-import com.ecommerce.project.payload.CategoryDTO;
 import com.ecommerce.project.payload.CategoryResponse;
-
-import java.util.List;
 
 // Beschrijf alle methods die je nodig hebt voor de implementatie in de service layer
 // De reden voor de Interface is om loose coupling te bereiken tussen de controller en service laag.

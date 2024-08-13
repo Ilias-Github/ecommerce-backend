@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 // Geeft bij Spring Boot aan dat het een Controller betreft en dat alle endpoints dezelfde pattern hebben
 // De controller moet zo simpel mogelijk zijn. Dus geen checks of error handling, dat is onderdeel van de service class.
 // Daarom geen try/catch in controllers plaatsen
@@ -36,20 +34,20 @@ public class CategoryController {
     // het geval is. Dan wordt er gekeken waarom de constraints niet zijn nageleefd en wordt de juiste status code terug
     // gegeven.
     @PostMapping("public/categories")
-    public ResponseEntity<String> CreateCategory(@Valid @RequestBody Category category) {
+    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category) {
         // Sla de status op bij een succes en toon dit aan de end-user
         String status = categoryService.createCategory(category);
         return new ResponseEntity<>(status, HttpStatus.CREATED);
     }
 
     @DeleteMapping("public/categories/{categoryId}")
-    public ResponseEntity<String> DeleteCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
         String status = categoryService.deleteCategory(categoryId);
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
     @PutMapping("public/categories/{categoryId}")
-    public ResponseEntity<String> UpdateCategory(@Valid @PathVariable Long categoryId, @RequestBody Category category) {
+    public ResponseEntity<String> updateCategory(@Valid @PathVariable Long categoryId, @RequestBody Category category) {
         String status = categoryService.updateCategory(categoryId, category.getCategoryName());
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
