@@ -7,13 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 // Geeft bij Spring Boot aan dat het een Controller betreft en dat alle endpoints dezelfde pattern hebben
-//
-// De try-catches zorgen ervoor dat de juiste status codes en messages worden gegenereerd.
+// De controller moet zo simpel mogelijk zijn. Dus geen checks of error handling, dat is onderdeel van de service class.
+// Daarom geen try/catch in controllers plaatsen
 @RestController
 @RequestMapping("api/")
 public class CategoryController {
@@ -27,11 +26,7 @@ public class CategoryController {
     @GetMapping("public/categories")
     public ResponseEntity<List<Category>> getAllCategories() {
         List<Category> allCategories = categoryService.getAllCategories();
-        try {
-            return new ResponseEntity<>(allCategories, HttpStatus.OK);
-        } catch (ResponseStatusException e) {
-            return new ResponseEntity<>(allCategories, e.getStatusCode());
-        }
+        return new ResponseEntity<>(allCategories, HttpStatus.OK);
     }
 
     // De @Valid annotation controleert of de constraints die gezet zijn in het object worden nageleefd. Als dat niet
@@ -39,32 +34,20 @@ public class CategoryController {
     // gegeven.
     @PostMapping("public/categories")
     public ResponseEntity<String> CreateCategory(@Valid @RequestBody Category category) {
-        try {
-            // Sla de status op bij een succes en toon dit aan de end user
-            String status = categoryService.createCategory(category);
-            return new ResponseEntity<>(status, HttpStatus.CREATED);
-        } catch (ResponseStatusException e) {
-            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
-        }
+        // Sla de status op bij een succes en toon dit aan de end-user
+        String status = categoryService.createCategory(category);
+        return new ResponseEntity<>(status, HttpStatus.CREATED);
     }
 
     @DeleteMapping("public/categories/{categoryId}")
     public ResponseEntity<String> DeleteCategory(@PathVariable Long categoryId) {
-        try {
-            String status = categoryService.deleteCategory(categoryId);
-            return new ResponseEntity<>(status, HttpStatus.OK);
-        } catch (ResponseStatusException e) {
-            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
-        }
+        String status = categoryService.deleteCategory(categoryId);
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
     @PutMapping("public/categories/{categoryId}")
-    public ResponseEntity<String> UpdateCategory(@PathVariable Long categoryId, @RequestBody Category category) {
-        try {
-            String status = categoryService.updateCategory(categoryId, category.getCategoryName());
-            return new ResponseEntity<>(status, HttpStatus.OK);
-        } catch (ResponseStatusException e) {
-            return new ResponseEntity<>(e.getReason(), e.getStatusCode());
-        }
+    public ResponseEntity<String> UpdateCategory(@Valid @PathVariable Long categoryId, @RequestBody Category category) {
+        String status = categoryService.updateCategory(categoryId, category.getCategoryName());
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 }
