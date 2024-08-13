@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// De class die Sping Boot als een entiteit ziet. Het betreft een POJO (plain old java object) die een representatie is
+// De class die Spring Boot als een entiteit ziet. Het betreft een POJO (plain old java object) die een representatie is
 // van een table in de database. De attributes zijn de columns van de table. Elke instantie van dit object is een rij in
 // de tabel
 @Entity

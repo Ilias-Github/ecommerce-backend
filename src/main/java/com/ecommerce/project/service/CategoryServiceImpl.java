@@ -34,6 +34,7 @@ public class CategoryServiceImpl implements ICategoryService {
         if (savedCategory != null) {
             throw new APIException("Category with the name '" + category.getCategoryName() + "' already exists");
         }
+
         categoryRepository.save(category);
         return "Successfully created category " + category.getCategoryName();
     }

@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 // De annotation onderschept elke exception die door de controllers wordt gegooid.
-// De onderschepte exceptions worden afgehandeld door deze class
+// De onderschepte exceptions worden door de methods in deze class afgehandeld
 @RestControllerAdvice
 public class MyGlobalExceptionHandler {
 
@@ -19,14 +19,15 @@ public class MyGlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> myMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         // Map interface wordt gebruikt om een representatie te maken van een key-value pair.
-        // Omdat Map een interface is, kan je daar geen object van maken. Daarom wordt een hashmap gemaakt
-        // (deze implementeert de Map interface)
+        // Omdat Map een interface is, kan je daar geen object van maken. Daarom wordt een hashmap gemaakt. Hashmap is
+        // basic implementatie van de Map interface
         // De eerste String betreft de veldnaam (key), de tweede de error message (value)
-        // Beide values betreffen objecten
+        // Beide values zijn objecten
         Map<String, String> response = new HashMap<>();
 
         // Voor elke exception, haal de veldnaam en de error message op en sla deze op in de HashMap
         e.getBindingResult().getAllErrors().forEach(err -> {
+            // De error wordt omgezet naar een FieldError zodat wij kunnen achterhalen om welk veld het gaat
             String fieldName = ((FieldError)err).getField();
             String message = err.getDefaultMessage();
             response.put(fieldName, message);
@@ -34,7 +35,7 @@ public class MyGlobalExceptionHandler {
 
         // ResponseEntity is een class binnen Spring die de HTTP-response representeert
         // (Status code, headers en body)
-        // Dit maakt het mogelijk om de HTTP-responses te configureren
+        // Dit maakt het mogelijk om custom HTTP-responses te configureren
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
@@ -45,6 +46,7 @@ public class MyGlobalExceptionHandler {
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
 
+    // Vangt overige api exceptions op
     @ExceptionHandler(APIException.class)
     public ResponseEntity<String> myAPIException(APIException e) {
         String message = e.getMessage();

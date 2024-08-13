@@ -13,6 +13,8 @@ import java.util.List;
 // Geeft bij Spring Boot aan dat het een Controller betreft en dat alle endpoints dezelfde pattern hebben
 // De controller moet zo simpel mogelijk zijn. Dus geen checks of error handling, dat is onderdeel van de service class.
 // Daarom geen try/catch in controllers plaatsen
+// Alleen de succes messages worden doorgegeven aan de front-end. De error messages worden vanuit de business logic
+// gegeven
 @RestController
 @RequestMapping("api/")
 public class CategoryController {
