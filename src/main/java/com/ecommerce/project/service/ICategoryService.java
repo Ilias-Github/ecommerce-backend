@@ -1,6 +1,8 @@
 package com.ecommerce.project.service;
 
 import com.ecommerce.project.model.Category;
+import com.ecommerce.project.payload.CategoryDTO;
+import com.ecommerce.project.payload.CategoryResponse;
 
 import java.util.List;
 
@@ -10,7 +12,8 @@ import java.util.List;
 // overal waar de interface wordt gebruikt (in dit geval de controller). Hiervoor hoef je geen files in de service laag
 // aan te passen.
 public interface ICategoryService {
-    List<Category> getAllCategories();
+    // CategoryResponse wordt teruggegeven omdat de client een lijst met DTO's moet terug krijgen
+    CategoryResponse getAllCategories();
 
     String createCategory(Category category);
 
