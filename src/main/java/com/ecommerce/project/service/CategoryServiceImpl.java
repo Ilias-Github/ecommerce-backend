@@ -8,6 +8,9 @@ import com.ecommerce.project.payload.CategoryResponse;
 import com.ecommerce.project.repositories.ICategoryRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,9 +25,12 @@ public class CategoryServiceImpl implements ICategoryService {
     private ModelMapper modelMapper;
 
     @Override
-    public CategoryResponse getAllCategories() {
+    public CategoryResponse getAllCategories(int pageNumber, int pageSize) {
+        Pageable pageDetails = PageRequest.of(pageNumber, pageSize);
+        Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
+
         // Haal alle categories op
-        List<Category> categories = categoryRepository.findAll();
+        List<Category> categories = categoryPage.getContent();
 
         // Controleer of er iets in de lijst zit
         if (categories.isEmpty()) throw new APIException("No categories found.");
