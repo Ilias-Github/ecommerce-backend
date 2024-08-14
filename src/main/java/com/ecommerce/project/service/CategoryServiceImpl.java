@@ -48,7 +48,13 @@ public class CategoryServiceImpl implements ICategoryService {
 
         // De controller verwacht een CategoryResponse terug. Deze verwacht een lijst aan CategoryDTOs
         CategoryResponse categoryResponse = new CategoryResponse();
+
         categoryResponse.setContent(categoryDTOS);
+        categoryResponse.setPageNumber(categoryPage.getNumber());
+        categoryResponse.setPageSize(categoryPage.getSize());
+        categoryResponse.setTotalElements(categoryPage.getTotalElements());
+        categoryResponse.setTotalPages(categoryPage.getTotalPages());
+        categoryResponse.setLastPage(categoryPage.isLast());
 
         return categoryResponse;
     }
