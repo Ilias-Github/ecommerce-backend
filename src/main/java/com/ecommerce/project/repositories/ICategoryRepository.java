@@ -1,6 +1,7 @@
 package com.ecommerce.project.repositories;
 
 import com.ecommerce.project.model.Category;
+import com.ecommerce.project.payload.CategoryDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 // Gebruikt JPA repository built in functions om database CRUD operaties uit te voeren

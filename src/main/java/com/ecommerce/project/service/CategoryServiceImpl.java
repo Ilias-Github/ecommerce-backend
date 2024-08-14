@@ -80,17 +80,19 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public String updateCategory(Long categoryId, String newCategoryName) {
+    public CategoryDTO updateCategory(Long categoryId, CategoryDTO categoryDTO) {
+        String categoryName = categoryDTO.getCategoryName();
+
         // Controleer of deze category bestaat, anders exception
         Category category = categoryRepository
                 .findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
 
         // Zet de category name van de categorie die opgehaald is
-        category.setCategoryName(newCategoryName);
+        category.setCategoryName(categoryName);
 
         // Sla deze geupdatet category op in de database
-        categoryRepository.save(category);
-        return "Successfully updated category with ID " + categoryId + " to " + newCategoryName;
+        Category updatedCategory = categoryRepository.save(category);
+        return modelMapper.map(updatedCategory, CategoryDTO.class);
     }
 }

@@ -9,12 +9,12 @@ import com.ecommerce.project.payload.CategoryResponse;
 // overal waar de interface wordt gebruikt (in dit geval de controller). Hiervoor hoef je geen files in de service laag
 // aan te passen.
 public interface ICategoryService {
+    CategoryDTO createCategory(CategoryDTO CategoryDTO);
+
     // CategoryResponse wordt teruggegeven omdat de client een lijst met DTO's moet terug krijgen
     CategoryResponse getAllCategories();
 
-    CategoryDTO createCategory(CategoryDTO CategoryDTO);
+    CategoryDTO updateCategory(Long categoryId, CategoryDTO categoryDTO);
 
     String deleteCategory(Long categoryId);
-
-    String updateCategory(Long categoryId, String newCategoryName);
 }
