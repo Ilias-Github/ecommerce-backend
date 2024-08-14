@@ -68,15 +68,16 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public String deleteCategory(Long categoryId) {
+    public CategoryDTO deleteCategory(Long categoryId) {
         // Controleer of deze category bestaat, anders exception
         Category category = categoryRepository
                 .findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
 
-        // Verwijder de category gebasseerd op het meegegeven ID
+        // Verwijder de category gebaseerd op het meegegeven ID
         categoryRepository.deleteById(categoryId);
-        return "Successfully removed category with ID " + categoryId;
+
+        return modelMapper.map(category, CategoryDTO.class);
     }
 
     @Override
