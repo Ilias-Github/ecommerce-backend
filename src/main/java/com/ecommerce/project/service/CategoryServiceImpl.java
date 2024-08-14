@@ -29,13 +29,18 @@ public class CategoryServiceImpl implements ICategoryService {
         // Controleer of er iets in de lijst zit
         if (categories.isEmpty()) throw new APIException("No categories found.");
 
-        // De lijst moet omgezet worden in een stream zodat de modelmapper de category kan omzetten naar een CategoryDTO
-        // Deze DTO's worden bewaard in een nieuwe lijst.
+        // De lijst moet omgezet worden in een stream om manipulatie van de List<Category> makkelijker te maken door
+        // gebruik te maken van de ingebouwde functionaliteit binnen Streams
+        // Wij maken gebruik van twee verschillende, maar vergelijkbare modellen (Category en categoryDTO: qua structuur
+        // en informatie is er veel overlap).
+        // De .map method maakt het mogelijk om een object om te zetten naar iets anders.
+        // modelMapper zorgt ervoor dat het ene model naar het ander model omgezet kan worden
+        // Deze DTO's worden bewaard in een nieuwe lijst
         List<CategoryDTO> categoryDTOS = categories.stream()
                 .map(category -> modelMapper.map(category, CategoryDTO.class))
                 .toList();
 
-        // De controller verwacht een CategoryResponse terug. Deze moet een lijst bevatten met category DTOs
+        // De controller verwacht een CategoryResponse terug. Deze verwacht een lijst aan CategoryDTOs
         CategoryResponse categoryResponse = new CategoryResponse();
         categoryResponse.setContent(categoryDTOS);
 

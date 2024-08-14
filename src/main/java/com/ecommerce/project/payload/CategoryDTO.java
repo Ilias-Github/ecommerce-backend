@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// Representeert de Category model in de presentation laag
+// Representeert de Category model in de presentation laag (het request object)
 // Als developer hebben wij volledige controle over welke velden van het model wij terug geven aan de client
 @Data
 @NoArgsConstructor
