@@ -12,7 +12,7 @@ public interface ICategoryService {
     CategoryDTO createCategory(CategoryDTO CategoryDTO);
 
     // CategoryResponse wordt teruggegeven omdat de client een lijst met DTO's moet terug krijgen
-    CategoryResponse getAllCategories(int pageNumber, int pageSize);
+    CategoryResponse getAllCategories(int pageNumber, int pageSize, String sortBy, String sortDir);
 
     CategoryDTO updateCategory(Long categoryId, CategoryDTO categoryDTO);
 
