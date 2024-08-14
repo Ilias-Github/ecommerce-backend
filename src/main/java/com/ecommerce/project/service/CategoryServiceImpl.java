@@ -48,15 +48,23 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     @Override
-    public String createCategory(Category category) {
-        Category savedCategory = categoryRepository.findByCategoryName(category.getCategoryName());
+    public CategoryDTO createCategory(CategoryDTO categoryDTO) {
+        // Zet de DTO om in een Category object omdat de database een category object verwacht
+        Category category = modelMapper.map(categoryDTO, Category.class);
+        // Zoek de category op in de database
+        Category dbCategory = categoryRepository.findByCategoryName(category.getCategoryName());
 
-        if (savedCategory != null) {
-            throw new APIException("Category with the name '" + category.getCategoryName() + "' already exists");
+        // Als de category gevonden is, gooi een error omdat het niet mogelijk is om een category met dezelfde naam aan
+        // te maken
+        if (dbCategory != null) {
+            throw new APIException("Category with the name '" + categoryDTO.getCategoryName() + "' already exists");
         }
 
-        categoryRepository.save(category);
-        return "Successfully created category " + category.getCategoryName();
+        // Sla de category op in de database en sla het resultaat op zodat deze teruggegeven kan worden
+        Category savedCategory = categoryRepository.save(category);
+
+        // De client verwacht een DTO, dus convert de opgeslagen category naar een DTO
+        return modelMapper.map(savedCategory, CategoryDTO.class);
     }
 
     @Override
