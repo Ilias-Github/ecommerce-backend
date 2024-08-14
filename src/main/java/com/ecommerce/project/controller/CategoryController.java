@@ -1,5 +1,6 @@
 package com.ecommerce.project.controller;
 
+import com.ecommerce.project.config.AppConstants;
 import com.ecommerce.project.payload.CategoryDTO;
 import com.ecommerce.project.payload.CategoryResponse;
 import com.ecommerce.project.service.ICategoryService;
@@ -27,9 +28,15 @@ public class CategoryController {
 
     private ModelMapper modelMapper;
 
+    // Default page number en page size meegegeven zodat de eerste pagina iig opgehaald kan worden zonder dat er request
+    // parameters meegegeven worden
     @GetMapping("public/categories")
-    public ResponseEntity<CategoryResponse> getAllCategories(@RequestParam(name = "pageNumber") int pageNumber,
-                                                             @RequestParam(name = "pageSize") int pageSize) {
+    public ResponseEntity<CategoryResponse> getAllCategories(
+            @RequestParam(name = "pageNumber",
+                    defaultValue = AppConstants.PAGE_NUMBER) int pageNumber,
+            @RequestParam(name = "pageSize",
+                    defaultValue = AppConstants.PAGE_SIZE) int pageSize
+    ) {
         CategoryResponse categoryResponse = categoryService.getAllCategories(pageNumber, pageSize);
         return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
     }

@@ -26,10 +26,13 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public CategoryResponse getAllCategories(int pageNumber, int pageSize) {
+        // Vraag een pagina op met de aangeleverde parameters
         Pageable pageDetails = PageRequest.of(pageNumber, pageSize);
+
+        // Vind alle categories met de parameters meegegeven in de page details
         Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
 
-        // Haal alle categories op
+        // Sla de opgevraagde pagina-informatie op in een lijst
         List<Category> categories = categoryPage.getContent();
 
         // Controleer of er iets in de lijst zit
@@ -49,6 +52,7 @@ public class CategoryServiceImpl implements ICategoryService {
         // De controller verwacht een CategoryResponse terug. Deze verwacht een lijst aan CategoryDTOs
         CategoryResponse categoryResponse = new CategoryResponse();
 
+        // Zet alle values van de category response
         categoryResponse.setContent(categoryDTOS);
         categoryResponse.setPageNumber(categoryPage.getNumber());
         categoryResponse.setPageSize(categoryPage.getSize());
