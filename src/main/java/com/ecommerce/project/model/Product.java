@@ -25,6 +25,6 @@ public class Product {
     @NotNull
     private double specialPrice;
     @ManyToOne
-    private Long categoryId;
+    private Category category;
 
 }
