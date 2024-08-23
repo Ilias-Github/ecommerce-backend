@@ -1,5 +1,6 @@
 package com.ecommerce.project.service;
 
+import com.ecommerce.project.exceptions.APIException;
 import com.ecommerce.project.model.Product;
 import com.ecommerce.project.payload.product.ProductDTO;
 import com.ecommerce.project.payload.product.ProductResponse;
@@ -33,9 +34,13 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public ProductDTO createProduct(ProductDTO productDTO, Long categoryId) {
-        // TODO: Check if product exists
+        Product product = productRepository.findByProductName(productDTO.getProductName());
+        if (product != null) {
+            throw new APIException("Product with the name '" + productDTO.getProductName() + "' already exists");
+        }
+
         // TODO: Add categoryID to the product
-        Product product = productRepository.save(modelMapper.map(productDTO, Product.class));
+        product = productRepository.save(modelMapper.map(productDTO, Product.class));
 
         return modelMapper.map(product, productDTO.getClass());
     }
