@@ -1,4 +1,4 @@
-package com.ecommerce.project.service;
+package com.ecommerce.project.service.category;
 
 import com.ecommerce.project.payload.category.CategoryDTO;
 import com.ecommerce.project.payload.category.CategoryResponse;
