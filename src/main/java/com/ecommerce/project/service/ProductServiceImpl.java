@@ -1,9 +1,12 @@
 package com.ecommerce.project.service;
 
 import com.ecommerce.project.exceptions.APIException;
+import com.ecommerce.project.exceptions.ResourceNotFoundException;
+import com.ecommerce.project.model.Category;
 import com.ecommerce.project.model.Product;
 import com.ecommerce.project.payload.product.ProductDTO;
 import com.ecommerce.project.payload.product.ProductResponse;
+import com.ecommerce.project.repositories.ICategoryRepository;
 import com.ecommerce.project.repositories.IProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +17,11 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements IProductService {
     @Autowired
-    IProductRepository productRepository;
+    private IProductRepository productRepository;
     @Autowired
-    ModelMapper modelMapper;
+    private ICategoryRepository categoryRepository;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public ProductResponse getAllProducts() {
@@ -39,9 +44,19 @@ public class ProductServiceImpl implements IProductService {
             throw new APIException("Product with the name '" + productDTO.getProductName() + "' already exists");
         }
 
-        // TODO: Add categoryID to the product
-        product = productRepository.save(modelMapper.map(productDTO, Product.class));
+        product = modelMapper.map(productDTO, Product.class);
 
-        return modelMapper.map(product, productDTO.getClass());
+        // Door de .orElseThrow() methode is het mogelijk om category op te slaan zonder er een optional van te maken.
+        // Optional geeft aan dat het kan zijn dat het object niet bestaat
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
+        product.setCategory(category);
+
+        double specialPrice = product.getPrice() - ((product.getDiscount() * 0.01) * product.getPrice());
+        product.setSpecialPrice(specialPrice);
+
+        product = productRepository.save(product);
+
+        return modelMapper.map(product, ProductDTO.class);
     }
 }

@@ -26,8 +26,8 @@ public class ProductController {
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 
-    @PostMapping("public/products")
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO, Long categoryId) {
+    @PostMapping("admin/categories/{categoryId}/product")
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO, @PathVariable Long categoryId) {
         ProductDTO dto = productService.createProduct(productDTO, categoryId);
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }

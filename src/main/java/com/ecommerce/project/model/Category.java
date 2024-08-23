@@ -1,14 +1,13 @@
 package com.ecommerce.project.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 // De class die Spring Boot als een entiteit ziet. Het betreft een POJO (plain old java object) die een representatie is
 // van een table in de database. De attributes zijn de columns van de table. Elke instantie van dit object is een rij in
@@ -36,4 +35,6 @@ public class Category {
     @NotBlank
     @Size(min = 5, message = "Category name must contain at least 5 characters")
     private String categoryName;
+    @OneToMany(mappedBy = "productId", cascade = CascadeType.ALL)
+    private List<Product> products;
 }
