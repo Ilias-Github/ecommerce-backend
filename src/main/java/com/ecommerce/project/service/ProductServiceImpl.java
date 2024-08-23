@@ -30,4 +30,13 @@ public class ProductServiceImpl implements IProductService {
 
         return productResponse;
     }
+
+    @Override
+    public ProductDTO createProduct(ProductDTO productDTO, Long categoryId) {
+        // TODO: Check if product exists
+        // TODO: Add categoryID to the product
+        Product product = productRepository.save(modelMapper.map(productDTO, Product.class));
+
+        return modelMapper.map(product, productDTO.getClass());
+    }
 }
