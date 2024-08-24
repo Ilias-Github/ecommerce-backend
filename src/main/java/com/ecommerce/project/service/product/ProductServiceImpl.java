@@ -26,20 +26,6 @@ public class ProductServiceImpl implements IProductService {
     private ModelMapper modelMapper;
 
     @Override
-    public ProductResponse getAllProducts() {
-        List<Product> products = productRepository.findAll();
-
-        List<ProductDTO> productDTOS = products.stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class))
-                .toList();
-
-        ProductResponse productResponse = new ProductResponse();
-        productResponse.setContent(productDTOS);
-
-        return productResponse;
-    }
-
-    @Override
     public ProductDTO createProduct(ProductDTO productDTO, Long categoryId) {
         Product product = productRepository.findByProductName(productDTO.getProductName());
         if (product != null)
@@ -59,6 +45,48 @@ public class ProductServiceImpl implements IProductService {
         product = productRepository.save(product);
 
         return modelMapper.map(product, ProductDTO.class);
+    }
+
+    @Override
+    public ProductResponse getAllProducts() {
+        List<Product> products = productRepository.findAll();
+
+        List<ProductDTO> productDTOS = products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .toList();
+
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setContent(productDTOS);
+
+        return productResponse;
+    }
+
+    @Override
+    public ProductResponse getProductsByCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
+        List<Product> products = productRepository.findByCategoryOrderByPriceAsc(category);
+
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setContent(products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class)).toList());
+
+        return productResponse;
+    }
+
+    @Override
+    public ProductResponse getProductsByKeyword(String productName) {
+        // De % is bedoeld voor pattern matching. Als je deze niet toevoegt dan kan je alleen op exacte strings zoeken
+        List<Product> products = productRepository.findByProductNameLikeIgnoreCase('%' + productName + '%');
+
+        if (products.isEmpty())
+            throw new APIException("No products exist with the name '" + productName);
+
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setContent(products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class)).toList());
+
+        return productResponse;
     }
 
     @Override
@@ -88,34 +116,6 @@ public class ProductServiceImpl implements IProductService {
         productRepository.deleteById(productId);
 
         return modelMapper.map(product, ProductDTO.class);
-    }
-
-    @Override
-    public ProductResponse getProductsByCategory(Long categoryId) {
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
-        List<Product> products = productRepository.findByCategoryOrderByPriceAsc(category);
-
-        ProductResponse productResponse = new ProductResponse();
-        productResponse.setContent(products.stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class)).toList());
-
-        return productResponse;
-    }
-
-    @Override
-    public ProductResponse getProductsByKeyword(String productName) {
-        // De % is bedoeld voor pattern matching. Als je deze niet toevoegt dan kan je alleen op exacte strings zoeken
-        List<Product> products = productRepository.findByProductNameLikeIgnoreCase('%' + productName + '%');
-
-        if (products.isEmpty())
-            throw new APIException("No products exist with the name '" + productName);
-
-        ProductResponse productResponse = new ProductResponse();
-        productResponse.setContent(products.stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class)).toList());
-
-        return productResponse;
     }
 
     private double SpecialPriceCalculation(double price, double discount) {

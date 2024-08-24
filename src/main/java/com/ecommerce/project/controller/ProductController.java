@@ -15,6 +15,12 @@ public class ProductController {
     @Autowired
     IProductService productService;
 
+    @PostMapping("admin/categories/{categoryId}/product")
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO, @PathVariable Long categoryId) {
+        ProductDTO dto = productService.createProduct(productDTO, categoryId);
+        return new ResponseEntity<>(dto, HttpStatus.CREATED);
+    }
+
     @GetMapping("public/products")
     public ResponseEntity<ProductResponse> getAllProducts(
             @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER) int pageNumber,
@@ -36,12 +42,6 @@ public class ProductController {
     public ResponseEntity<ProductResponse> getProductsByKeyword(@PathVariable String keyword) {
         ProductResponse productResponse = productService.getProductsByKeyword(keyword);
         return new ResponseEntity<>(productResponse, HttpStatus.FOUND);
-    }
-
-    @PostMapping("admin/categories/{categoryId}/product")
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO, @PathVariable Long categoryId) {
-        ProductDTO dto = productService.createProduct(productDTO, categoryId);
-        return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
 
     @PutMapping("admin/products/{productId}")
