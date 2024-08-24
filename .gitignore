@@ -194,4 +194,6 @@ Temporary Items
 .history
 .ionide
 
+# Ignore uploaded images to server when testing
+images/
 # End of https://www.toptal.com/developers/gitignore/api/intellij,java,macos,visualstudiocode
