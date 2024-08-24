@@ -7,4 +7,6 @@ public interface IProductService {
     ProductResponse getAllProducts();
 
     ProductDTO createProduct(ProductDTO productDTO, Long categoryId);
+
+    ProductResponse getProductsByCategory(Long categoryId);
 }

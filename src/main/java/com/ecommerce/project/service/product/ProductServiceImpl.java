@@ -59,4 +59,17 @@ public class ProductServiceImpl implements IProductService {
 
         return modelMapper.map(product, ProductDTO.class);
     }
+
+    @Override
+    public ProductResponse getProductsByCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
+        List<Product> products = productRepository.findByCategoryOrderByPriceAsc(category);
+
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setContent(products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class)).toList());
+
+        return productResponse;
+    }
 }
