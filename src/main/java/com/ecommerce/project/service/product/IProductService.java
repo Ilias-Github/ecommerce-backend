@@ -9,4 +9,6 @@ public interface IProductService {
     ProductDTO createProduct(ProductDTO productDTO, Long categoryId);
 
     ProductResponse getProductsByCategory(Long categoryId);
+
+    ProductResponse getProductsByKeyword(String keyword);
 }

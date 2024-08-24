@@ -40,9 +40,8 @@ public class ProductServiceImpl implements IProductService {
     @Override
     public ProductDTO createProduct(ProductDTO productDTO, Long categoryId) {
         Product product = productRepository.findByProductName(productDTO.getProductName());
-        if (product != null) {
+        if (product != null)
             throw new APIException("Product with the name '" + productDTO.getProductName() + "' already exists");
-        }
 
         product = modelMapper.map(productDTO, Product.class);
 
@@ -65,6 +64,21 @@ public class ProductServiceImpl implements IProductService {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
         List<Product> products = productRepository.findByCategoryOrderByPriceAsc(category);
+
+        ProductResponse productResponse = new ProductResponse();
+        productResponse.setContent(products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class)).toList());
+
+        return productResponse;
+    }
+
+    @Override
+    public ProductResponse getProductsByKeyword(String productName) {
+        // De % is bedoeld voor pattern matching. Als je deze niet toevoegt dan kan je alleen op exacte strings zoeken
+        List<Product> products = productRepository.findByProductNameLikeIgnoreCase('%' + productName + '%');
+
+        if (products.isEmpty())
+            throw new APIException("No products exist with the name '" + productName);
 
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(products.stream()
