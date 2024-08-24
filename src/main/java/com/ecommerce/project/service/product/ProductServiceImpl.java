@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static java.lang.Math.round;
+
 @Service
 public class ProductServiceImpl implements IProductService {
     @Autowired
@@ -51,12 +53,31 @@ public class ProductServiceImpl implements IProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
         product.setCategory(category);
 
-        double specialPrice = product.getPrice() - ((product.getDiscount() * 0.01) * product.getPrice());
+        double specialPrice = SpecialPriceCalculation(product.getPrice(), product.getDiscount());
         product.setSpecialPrice(specialPrice);
 
         product = productRepository.save(product);
 
         return modelMapper.map(product, ProductDTO.class);
+    }
+
+    @Override
+    public ProductDTO updateProduct(ProductDTO productDTO, Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+
+        product.setProductName(productDTO.getProductName());
+        product.setDescription(productDTO.getDescription());
+        product.setQuantity(productDTO.getQuantity());
+        product.setDiscount(productDTO.getDiscount());
+        product.setPrice(productDTO.getPrice());
+
+        double specialPrice = SpecialPriceCalculation(product.getPrice(), product.getDiscount());
+        product.setSpecialPrice(specialPrice);
+
+        Product savedProduct = productRepository.save(product);
+
+        return modelMapper.map(savedProduct, ProductDTO.class);
     }
 
     @Override
@@ -85,5 +106,11 @@ public class ProductServiceImpl implements IProductService {
                 .map(product -> modelMapper.map(product, ProductDTO.class)).toList());
 
         return productResponse;
+    }
+
+    private double SpecialPriceCalculation(double price, double discount) {
+        double specialPrice = price - (discount * 0.01) * price;
+
+        return round(specialPrice);
     }
 }
