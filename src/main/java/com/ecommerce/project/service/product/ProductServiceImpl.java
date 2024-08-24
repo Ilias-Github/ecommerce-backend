@@ -81,6 +81,16 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
+    public ProductDTO deleteProduct(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+
+        productRepository.deleteById(productId);
+
+        return modelMapper.map(product, ProductDTO.class);
+    }
+
+    @Override
     public ProductResponse getProductsByCategory(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));

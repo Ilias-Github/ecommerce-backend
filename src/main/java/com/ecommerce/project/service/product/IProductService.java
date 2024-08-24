@@ -13,4 +13,6 @@ public interface IProductService {
     ProductDTO createProduct(ProductDTO productDTO, Long categoryId);
 
     ProductDTO updateProduct(ProductDTO productDTO, Long productId);
+
+    ProductDTO deleteProduct(Long productId);
 }
