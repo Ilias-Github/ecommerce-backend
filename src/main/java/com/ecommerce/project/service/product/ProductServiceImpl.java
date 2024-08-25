@@ -126,13 +126,18 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public ProductDTO updateProductImage(Long productId, MultipartFile image) throws IOException {
+        // Vind het product waaraan de afbeelding toegevoegd dient te worden
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
-        // Path waar de plaatjes opgeslagen worden op de server
-        String path = "images/";
+        // Path waar de plaatjes opgeslagen worden op de server. Dit is op de root van de server. Een directory die
+        // naast de src directory bestaat
+        String path = "images";
+
+        // Sla de bestandsnaam op die teruggegeven wordt na het succesvol uploaden van een image
         String fileName = uploadImage(path, image);
 
+        // Sla de naam van de afbeelding op in het object
         product.setImage(fileName);
 
         Product updatedProduct = productRepository.save(product);
@@ -140,19 +145,27 @@ public class ProductServiceImpl implements IProductService {
         return modelMapper.map(updatedProduct, ProductDTO.class);
     }
 
-    // TODO: leg de method uit om het goed te snappen
     private String uploadImage(String path, MultipartFile file) throws IOException {
+        // De bestandsnaam is nodig om te achterhalen welke extensie de file heeft
         String originalFileName = file.getOriginalFilename();
 
         // Genereer een random unieke file naam zodat deze geen files in de database gaat overschrijven
+        // UUID genereert een random string die zo lang en random is dat het vrijwel onmogelijk is dat het twee keer
+        // dezelfde string genereert. Omdat de kans op duplicate namen extreem klein is, is het niet nodig om te
+        // checken of de naam al bestaat
         String randomId = UUID.randomUUID().toString();
+        // Hier wordt de extensie van de originele filenaam toegevoegd aan de randomId. De extensie is altijd de
+        // laatste characters na de laatste "." in een filenaam
         String fileName = randomId.concat(originalFileName.substring(originalFileName.lastIndexOf('.')));
+        // File.separator wordt gebruikt omdat separators OS afhankelijk zijn. Deze wil je dus nooit hard coded hebben
         String filePath = path + File.separator + fileName;
 
+        // Check of de directory bestaan. Maak deze aan indien het niet het geval is
         File folder = new File(path);
         if (!folder.exists())
             folder.mkdir();
 
+        // Kopieer het bestand naar de door ons aangegeven file path
         Files.copy(file.getInputStream(), Paths.get(filePath));
 
         return fileName;
