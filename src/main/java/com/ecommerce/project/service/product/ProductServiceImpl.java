@@ -30,6 +30,7 @@ public class ProductServiceImpl implements IProductService {
     private ModelMapper modelMapper;
     @Autowired
     private IFileService fileService;
+    // Property van application.properties die globaal in het project gebruikt kan worden
     @Value("${project.image}")
     private String path;
 
@@ -59,6 +60,9 @@ public class ProductServiceImpl implements IProductService {
     public ProductResponse getAllProducts() {
         List<Product> products = productRepository.findAll();
 
+        if (products.isEmpty())
+            throw new APIException("Products don't exist yet");
+
         List<ProductDTO> productDTOS = products.stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class))
                 .toList();
@@ -73,8 +77,11 @@ public class ProductServiceImpl implements IProductService {
     public ProductResponse getProductsByCategory(Long categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
+
         List<Product> products = productRepository.findByCategoryOrderByPriceAsc(category);
 
+        if (products.isEmpty())
+            throw new APIException("No products found with the category " + category.getCategoryName());
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(products.stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class)).toList());
