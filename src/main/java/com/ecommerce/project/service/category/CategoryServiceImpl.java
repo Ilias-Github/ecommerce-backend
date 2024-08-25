@@ -27,6 +27,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public CategoryResponse getAllCategories(int pageNumber, int pageSize, String sortBy, String sortOrder) {
+        // TODO: uitgebreider uitleggen wat hier gebeurt
         // Bepalen in welke richting gesorteerd dient te worden en op welk veld
         Sort sort = sortOrder.equalsIgnoreCase("asc")
                 ? Sort.by(sortBy).ascending()

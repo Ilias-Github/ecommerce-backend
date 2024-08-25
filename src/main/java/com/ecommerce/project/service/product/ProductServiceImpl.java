@@ -12,6 +12,10 @@ import com.ecommerce.project.service.IFileService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,18 +61,24 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public ProductResponse getAllProducts() {
-        List<Product> products = productRepository.findAll();
+    public ProductResponse getAllProducts(int pageNumber, int pageSize, String sortBy, String sortOrder) {
+        Page<Product> productsPage = getProductsPage(sortOrder, sortBy, pageNumber, pageSize);
+        List<Product> products = productsPage.getContent();
 
-        if (products.isEmpty())
-            throw new APIException("Products don't exist yet");
+        if (products.isEmpty()) throw new APIException("Products don't exist yet");
 
         List<ProductDTO> productDTOS = products.stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class))
                 .toList();
 
         ProductResponse productResponse = new ProductResponse();
+
         productResponse.setContent(productDTOS);
+        productResponse.setPageNumber(productsPage.getNumber());
+        productResponse.setPageSize(productsPage.getSize());
+        productResponse.setTotalElements(productsPage.getTotalElements());
+        productResponse.setTotalPages(productsPage.getTotalPages());
+        productResponse.setLastPage(productsPage.isLast());
 
         return productResponse;
     }
@@ -151,6 +161,19 @@ public class ProductServiceImpl implements IProductService {
         Product updatedProduct = productRepository.save(product);
 
         return modelMapper.map(updatedProduct, ProductDTO.class);
+    }
+
+    private Page<Product> getProductsPage(String sortOrder, String sortBy, int pageNumber, int pageSize) {
+
+        Sort sort = sortOrder.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sort);
+
+        Page<Product> productsPage = productRepository.findAll(pageDetails);
+
+        return productsPage;
     }
 
     private double SpecialPriceCalculation(double price, double discount) {
