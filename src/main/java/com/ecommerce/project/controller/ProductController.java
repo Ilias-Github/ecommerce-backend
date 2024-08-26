@@ -30,7 +30,7 @@ public class ProductController {
     public ResponseEntity<ProductResponse> getAllProducts(
             @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER) int pageNumber,
             @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE) int pageSize,
-            @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_BY) String sortBy,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_PRODUCTS_BY) String sortBy,
             @RequestParam(name = "sortOrder", defaultValue = AppConstants.SORT_DIR) String sortOrder
     ) {
         ProductResponse productResponse = productService.getAllProducts(pageNumber, pageSize, sortBy, sortOrder);
@@ -42,7 +42,7 @@ public class ProductController {
             @PathVariable Long categoryId,
             @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER) int pageNumber,
             @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE) int pageSize,
-            @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_BY) String sortBy,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_PRODUCTS_BY) String sortBy,
             @RequestParam(name = "sortOrder", defaultValue = AppConstants.SORT_DIR) String sortOrder
     ) {
         ProductResponse productResponse = productService
@@ -55,7 +55,7 @@ public class ProductController {
             @PathVariable String keyword,
             @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER) int pageNumber,
             @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE) int pageSize,
-            @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_BY) String sortBy,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_PRODUCTS_BY) String sortBy,
             @RequestParam(name = "sortOrder", defaultValue = AppConstants.SORT_DIR) String sortOrder
     ) {
         ProductResponse productResponse = productService

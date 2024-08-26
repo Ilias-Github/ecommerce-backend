@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 // Geeft bij Spring Boot aan dat het een Controller betreft en dat alle endpoints dezelfde pattern hebben
 // De controller moet zo simpel mogelijk zijn. Dus geen checks of error handling, dat is onderdeel van de service class.
 // Daarom geen try/catch in controllers plaatsen
-// Alleen de succes messages worden doorgegeven aan de front-end. De error messages worden vanuit de business logic
+// Alleen succes messages worden doorgegeven aan de front-end. De error messages worden vanuit de business logic
 // gegeven
 @RestController
 @RequestMapping("api/")
@@ -34,7 +34,7 @@ public class CategoryController {
     public ResponseEntity<CategoryResponse> getAllCategories(
             @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER) int pageNumber,
             @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE) int pageSize,
-            @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_BY) String sortBy,
+            @RequestParam(name = "sortBy", defaultValue = AppConstants.SORT_CATEGORIES_BY) String sortBy,
             @RequestParam(name = "sortOrder", defaultValue = AppConstants.SORT_DIR) String sortDir
 
     ) {
