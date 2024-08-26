@@ -62,18 +62,22 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public ProductResponse getAllProducts(int pageNumber, int pageSize, String sortBy, String sortOrder) {
-        Page<Product> productsPage = getProductsPage(sortOrder, sortBy, pageNumber, pageSize);
+        Sort sort = sortOrder.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sort);
+
+        Page<Product> productsPage = productRepository.findAll(pageDetails);
         List<Product> products = productsPage.getContent();
 
         if (products.isEmpty()) throw new APIException("Products don't exist yet");
 
-        List<ProductDTO> productDTOS = products.stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class))
-                .toList();
-
         ProductResponse productResponse = new ProductResponse();
+        productResponse.setContent(products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .toList());
 
-        productResponse.setContent(productDTOS);
         productResponse.setPageNumber(productsPage.getNumber());
         productResponse.setPageSize(productsPage.getSize());
         productResponse.setTotalElements(productsPage.getTotalElements());
