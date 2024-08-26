@@ -40,7 +40,7 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public ProductDTO createProduct(ProductDTO productDTO, Long categoryId) {
-        Product product = productRepository.findByProductName(productDTO.getProductName());
+        Product product = productRepository.findByProductNameIgnoreCase(productDTO.getProductName());
         if (product != null)
             throw new APIException("Product with the name '" + productDTO.getProductName() + "' already exists");
 
