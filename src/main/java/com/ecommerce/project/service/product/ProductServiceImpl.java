@@ -88,17 +88,31 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public ProductResponse getProductsByCategory(Long categoryId) {
+    public ProductResponse getProductsByCategory(
+            Long categoryId, int pageNumber, int pageSize, String sortBy, String sortOrder
+    ) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
 
-        List<Product> products = productRepository.findByCategoryOrderByPriceAsc(category);
+        Sort sort = sortOrder.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
 
-        if (products.isEmpty())
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+        Page<Product> productsPage = productRepository.findByCategoryOrderByPriceAsc(category, pageable);
+
+        if (productsPage.isEmpty())
             throw new APIException("No products found with the category " + category.getCategoryName());
+
         ProductResponse productResponse = new ProductResponse();
-        productResponse.setContent(products.stream()
+        productResponse.setContent(productsPage.stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class)).toList());
+
+        productResponse.setPageNumber(productsPage.getNumber());
+        productResponse.setPageSize(productsPage.getSize());
+        productResponse.setTotalElements(productsPage.getTotalElements());
+        productResponse.setTotalPages(productsPage.getTotalPages());
+        productResponse.setLastPage(productsPage.isLast());
 
         return productResponse;
     }
@@ -168,7 +182,6 @@ public class ProductServiceImpl implements IProductService {
     }
 
     private Page<Product> getProductsPage(String sortOrder, String sortBy, int pageNumber, int pageSize) {
-
         Sort sort = sortOrder.equalsIgnoreCase("asc")
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();

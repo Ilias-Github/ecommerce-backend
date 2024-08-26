@@ -9,7 +9,9 @@ import java.io.IOException;
 public interface IProductService {
     ProductResponse getAllProducts(int pageNumber, int pageSize, String sortBy, String sortOrder);
 
-    ProductResponse getProductsByCategory(Long categoryId);
+    ProductResponse getProductsByCategory(
+            Long categoryId, int pageNumber, int pageSize, String sortBy, String sortOrder
+    );
 
     ProductResponse getProductsByKeyword(String keyword);
 
