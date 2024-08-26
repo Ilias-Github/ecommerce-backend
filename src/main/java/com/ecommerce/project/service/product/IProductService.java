@@ -13,7 +13,9 @@ public interface IProductService {
             Long categoryId, int pageNumber, int pageSize, String sortBy, String sortOrder
     );
 
-    ProductResponse getProductsByKeyword(String keyword);
+    ProductResponse getProductsByKeyword(
+            String keyword, int pageNumber, int pageSize, String sortBy, String sortOrder
+    );
 
     ProductDTO createProduct(ProductDTO productDTO, Long categoryId);
 

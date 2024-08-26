@@ -7,13 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface IProductRepository extends JpaRepository<Product, Long> {
     Product findByProductName(String productName);
 
     Page<Product> findByCategoryOrderByPriceAsc(Category category, Pageable pageable);
 
-    List<Product> findByProductNameLikeIgnoreCase(String productName);
+    Page<Product> findByProductNameLikeIgnoreCase(String productName, Pageable pageable);
 }

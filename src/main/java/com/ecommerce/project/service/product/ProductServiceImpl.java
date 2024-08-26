@@ -118,16 +118,30 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public ProductResponse getProductsByKeyword(String productName) {
-        // De % is bedoeld voor pattern matching. Als je deze niet toevoegt dan kan je alleen op exacte strings zoeken
-        List<Product> products = productRepository.findByProductNameLikeIgnoreCase('%' + productName + '%');
+    public ProductResponse getProductsByKeyword(
+            String productName, int pageNumber, int pageSize, String sortBy, String sortOrder
+    ) {
+        Sort sort = sortOrder.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
 
-        if (products.isEmpty())
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
+        // De % is bedoeld voor pattern matching. Als je deze niet toevoegt dan kan je alleen op exacte strings zoeken
+        Page<Product> pageProducts = productRepository
+                .findByProductNameLikeIgnoreCase('%' + productName + '%', pageable);
+
+        if (pageProducts.isEmpty())
             throw new APIException("No products exist with the name '" + productName);
 
         ProductResponse productResponse = new ProductResponse();
-        productResponse.setContent(products.stream()
+        productResponse.setContent(pageProducts.stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class)).toList());
+
+        productResponse.setPageNumber(pageProducts.getNumber());
+        productResponse.setPageSize(pageProducts.getSize());
+        productResponse.setTotalElements(pageProducts.getTotalElements());
+        productResponse.setTotalPages(pageProducts.getTotalPages());
+        productResponse.setLastPage(pageProducts.isLast());
 
         return productResponse;
     }
