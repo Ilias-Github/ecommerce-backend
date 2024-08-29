@@ -1,4 +1,4 @@
-package com.example.securitydemo.jwt;
+package com.ecommerce.project.security.jwt;
 
 // Class die de login request representeert
 // LoginRequestDTO

@@ -1,4 +1,4 @@
-package com.example.securitydemo.jwt;
+package com.ecommerce.project.security.jwt;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -33,7 +33,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     // Logger voor persoonlijk gebruik
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
-   // Onderdeel van de OncePerRequestFilter
+    // Onderdeel van de OncePerRequestFilter
     // Filtert het request eenmalig per request
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
