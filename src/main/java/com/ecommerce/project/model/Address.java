@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class Address {
     @Size(min = 5, message = "City name must be at least 5 characters")
     private String city;
 
+    @ToString.Exclude
     @ManyToMany
     private List<User> users;
 
