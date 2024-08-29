@@ -9,15 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class AppRole {
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long roleId;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
-    private AppRole roleName;
-
-    public Role(Role roleName) {
-        this.roleName = roleName;
-    }
+    private AppRole role;
 }
