@@ -43,6 +43,9 @@ public class User {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private Set<Product> products;
 
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    Set<Address> addresses;
+
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
