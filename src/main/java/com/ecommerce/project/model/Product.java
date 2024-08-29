@@ -35,4 +35,8 @@ public class Product {
     @JsonIgnore
     private Category category;
 
+    // Meerdere producten kunnen verkocht worden door een user
+    @ManyToOne
+    private User user;
+
 }

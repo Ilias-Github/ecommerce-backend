@@ -37,6 +37,12 @@ public class User {
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
+    // Een user kan een of meerdere producten aan zich gekoppeld hebben die verkocht worden op het platform
+    // Orphan removal verwijdert alle producten die geen parent meer hebben
+    // Dit gebeurt wanneer een user is verwijderd waarbij de producten alleen gelinkt waren aan die specifieke user
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private Set<Product> products;
+
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
