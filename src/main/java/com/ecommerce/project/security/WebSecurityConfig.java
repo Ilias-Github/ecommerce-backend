@@ -1,9 +1,15 @@
 package com.ecommerce.project.security;
 
+import com.ecommerce.project.model.ERole;
+import com.ecommerce.project.model.Role;
+import com.ecommerce.project.model.User;
+import com.ecommerce.project.repositories.IRoleRepository;
+import com.ecommerce.project.repositories.IUserRepository;
 import com.ecommerce.project.security.jwt.AuthEntryPointJwt;
 import com.ecommerce.project.security.jwt.AuthTokenFilter;
 import com.ecommerce.project.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,12 +24,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.Set;
+
 @Configuration
 @EnableWebSecurity
 // @EnableMethodSecurity
 public class WebSecurityConfig {
     @Autowired
-    UserDetailsServiceImpl userDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
 
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
@@ -96,5 +104,68 @@ public class WebSecurityConfig {
                 "/swagger-ui.html",
                 "/webjars/**"
         ));
+    }
+
+    // Dummy data voor h2 database
+    @Bean
+    public CommandLineRunner initData(IRoleRepository roleRepository, IUserRepository userRepository,
+                                      PasswordEncoder passwordEncoder) {
+        return args -> {
+            // Retrieve or create roles
+            Role userRole = roleRepository.findByRoleName(ERole.USER)
+                    .orElseGet(() -> {
+                        Role newUserRole = new Role(ERole.USER);
+                        return roleRepository.save(newUserRole);
+                    });
+
+            Role sellerRole = roleRepository.findByRoleName(ERole.SELLER)
+                    .orElseGet(() -> {
+                        Role newSellerRole = new Role(ERole.SELLER);
+                        return roleRepository.save(newSellerRole);
+                    });
+
+            Role adminRole = roleRepository.findByRoleName(ERole.ADMIN)
+                    .orElseGet(() -> {
+                        Role newAdminRole = new Role(ERole.ADMIN);
+                        return roleRepository.save(newAdminRole);
+                    });
+
+            Set<Role> userRoles = Set.of(userRole);
+            Set<Role> sellerRoles = Set.of(sellerRole);
+            Set<Role> adminRoles = Set.of(userRole, sellerRole, adminRole);
+
+
+            // Create users if not already present
+            if (!userRepository.existsByUserName("user1")) {
+                User user1 = new User("user1", "user1@example.com", passwordEncoder.encode("password1"));
+                userRepository.save(user1);
+            }
+
+            if (!userRepository.existsByUserName("seller1")) {
+                User seller1 = new User("seller1", "seller1@example.com", passwordEncoder.encode("password2"));
+                userRepository.save(seller1);
+            }
+
+            if (!userRepository.existsByUserName("admin")) {
+                User admin = new User("admin", "admin@example.com", passwordEncoder.encode("adminPass"));
+                userRepository.save(admin);
+            }
+
+            // Update roles for existing users
+            userRepository.findByUserName("user1").ifPresent(user -> {
+                user.setRoles(userRoles);
+                userRepository.save(user);
+            });
+
+            userRepository.findByUserName("seller1").ifPresent(seller -> {
+                seller.setRoles(sellerRoles);
+                userRepository.save(seller);
+            });
+
+            userRepository.findByUserName("admin").ifPresent(admin -> {
+                admin.setRoles(adminRoles);
+                userRepository.save(admin);
+            });
+        };
     }
 }
