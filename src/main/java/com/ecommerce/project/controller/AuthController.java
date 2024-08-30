@@ -13,7 +13,9 @@ import com.ecommerce.project.security.jwt.payload.UserInfoResponse;
 import com.ecommerce.project.security.services.UserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,15 +48,17 @@ public class AuthController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    // TODO: Verplaats dit naar de service
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         Authentication authentication;
 
         try {
-            authentication =
-                    authenticationManager.authenticate(
-                            new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
-                    );
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(),
+                            loginRequest.getPassword()
+                    ));
         } catch (AuthenticationException e) {
             Map<String, Object> map = new HashMap<>();
             map.put("message", "Bad credentials");
@@ -62,19 +66,23 @@ public class AuthController {
             return new ResponseEntity<Object>(map, HttpStatus.NOT_FOUND);
         }
 
+        // TODO: waarvoor is dit nodig?
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        // Maak een userDetails object aan zodat Spring security deze kan gebruiken
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
+        // Sla alle rollen op om deze in een response terug te kunnen geven
+        List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).toList();
 
-        List<String> roles =
-                userDetails.getAuthorities().stream().map(item -> item.getAuthority()).toList();
+        // Genereer een JWT en sla deze op in een cookie
+        ResponseCookie cookie = jwtUtils.generateJwtCookie(userDetails);
 
-        UserInfoResponse response =
-                new UserInfoResponse(userDetails.getId(), jwtToken, userDetails.getUsername(), roles);
+        // Maak een response body aan
+        UserInfoResponse response = new UserInfoResponse(userDetails.getId(), userDetails.getUsername(), roles);
 
-        return ResponseEntity.ok(response);
+        // Zet de cookie in de header van de response en de overige informatie in de body van de response
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(response);
     }
 
     @PostMapping("/signup")
