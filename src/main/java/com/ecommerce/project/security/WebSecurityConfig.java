@@ -67,6 +67,7 @@ public class WebSecurityConfig {
                         // Deze moet weggehaald worden in productie, staat alleen aan zodat endpoints getest kunnen
                         // worden zonder dat er een token meegestuurd hoeft te worden met elk request
                         .requestMatchers("/api/admin/**").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/swagger-ui/").permitAll()
                         .requestMatchers("/api/test/**").permitAll()
@@ -78,6 +79,8 @@ public class WebSecurityConfig {
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
+        // Toestaan van frames omdat h2 console daar gebruik van maakt
+        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
         return http.build();
     }
 
