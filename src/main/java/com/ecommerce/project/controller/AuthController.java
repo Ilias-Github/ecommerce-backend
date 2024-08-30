@@ -149,4 +149,12 @@ public class AuthController {
 
         return ResponseEntity.ok(new MessageResponse("User registered succesfully"));
     }
+
+    @PostMapping("/signout")
+    public ResponseEntity<?> signOut() {
+        // Maak een nieuwe cookie aan zonder de jwt omdat de gebruiker niet meer ingelogd mag zijn
+        ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
+        MessageResponse message = new MessageResponse("User signed out succesfully");
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(message);
+    }
 }
