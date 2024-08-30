@@ -18,4 +18,8 @@ public class Role {
     @ToString.Exclude
     @Enumerated(EnumType.STRING)
     private ERole role;
+
+    public Role(ERole role) {
+        this.role = role;
+    }
 }
