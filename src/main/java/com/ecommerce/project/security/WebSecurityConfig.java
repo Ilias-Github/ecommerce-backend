@@ -112,19 +112,19 @@ public class WebSecurityConfig {
                                       PasswordEncoder passwordEncoder) {
         return args -> {
             // Retrieve or create roles
-            Role userRole = roleRepository.findByRoleName(ERole.USER)
+            Role userRole = roleRepository.findByRole(ERole.USER)
                     .orElseGet(() -> {
                         Role newUserRole = new Role(ERole.USER);
                         return roleRepository.save(newUserRole);
                     });
 
-            Role sellerRole = roleRepository.findByRoleName(ERole.SELLER)
+            Role sellerRole = roleRepository.findByRole(ERole.SELLER)
                     .orElseGet(() -> {
                         Role newSellerRole = new Role(ERole.SELLER);
                         return roleRepository.save(newSellerRole);
                     });
 
-            Role adminRole = roleRepository.findByRoleName(ERole.ADMIN)
+            Role adminRole = roleRepository.findByRole(ERole.ADMIN)
                     .orElseGet(() -> {
                         Role newAdminRole = new Role(ERole.ADMIN);
                         return roleRepository.save(newAdminRole);
@@ -157,12 +157,12 @@ public class WebSecurityConfig {
                 userRepository.save(user);
             });
 
-            userRepository.findByUserName("seller1").ifPresent(seller -> {
+            userRepository.findByUsername("seller1").ifPresent(seller -> {
                 seller.setRoles(sellerRoles);
                 userRepository.save(seller);
             });
 
-            userRepository.findByUserName("admin").ifPresent(admin -> {
+            userRepository.findByUsername("admin").ifPresent(admin -> {
                 admin.setRoles(adminRoles);
                 userRepository.save(admin);
             });

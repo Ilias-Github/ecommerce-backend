@@ -107,7 +107,7 @@ public class AuthController {
         // Als bij het inschrijven geen role wordt meegegeven, dan wordt standaard de user role aangehouden
         // Als strRoles null is kan je er niet doorheen itereren, daarom moet deze if check gebouwd worden
         if (strRoles == null) {
-            Role userRole = roleRepository.findByRoleName(ERole.USER)
+            Role userRole = roleRepository.findByRole(ERole.USER)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
             roles.add(userRole);
         } else {
@@ -115,17 +115,17 @@ public class AuthController {
             strRoles.forEach(role -> {
                 switch (role) {
                     case "seller":
-                        Role sellerRole = roleRepository.findByRoleName(ERole.SELLER)
+                        Role sellerRole = roleRepository.findByRole(ERole.SELLER)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(sellerRole);
                         break;
                     case "admin":
-                        Role adminRole = roleRepository.findByRoleName(ERole.ADMIN)
+                        Role adminRole = roleRepository.findByRole(ERole.ADMIN)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(adminRole);
                         break;
                     default:
-                        Role userRole = roleRepository.findByRoleName(ERole.USER)
+                        Role userRole = roleRepository.findByRole(ERole.USER)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(userRole);
                         break;
