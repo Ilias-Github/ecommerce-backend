@@ -23,10 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -157,4 +154,19 @@ public class AuthController {
         MessageResponse message = new MessageResponse("User signed out succesfully");
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(message);
     }
+
+    // User informatie van de ingelogde user
+    @GetMapping("/user")
+    public ResponseEntity<?> currentUser(Authentication authentication) {
+        // User representatie binnen spring security
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        // Sla de roles op als een list aan strings zodat deze met de response meegegeven kan worden.
+        List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority()).toList();
+
+        UserInfoResponse response = new UserInfoResponse(userDetails.getId(), userDetails.getUsername(), roles);
+
+        return ResponseEntity.ok().body(response);
+    }
+
 }
