@@ -43,7 +43,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
         try {
             // Het request wordt ontleed om de JWT token te extraheren uit de header van het request
-            String jwt = jwtUtils.getJwtFromHeader(request);
+//            String jwt = jwtUtils.getJwtFromHeader(request);
+            String jwt = jwtUtils.getJwtCookie(request);
             logger.debug("AuthTokenFilter.java: {}", jwt);
 
             // Hieronder gebeurt het valideren van de binnengekomen token
