@@ -1,5 +1,7 @@
 package com.ecommerce.project.security.jwt;
 
+import com.ecommerce.project.security.services.UserDetailsImpl;
+import com.ecommerce.project.security.services.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,8 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -28,7 +28,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     // TODO: Wat is en doet deze service
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
 
     // Logger voor persoonlijk gebruik
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
@@ -54,7 +54,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
                 // Laad de user details aan de hand van de username
                 // TODO: Waar worden de user details vandaan gehaald?
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(username);
 
                 // Een token wordt gebouwd aan de hand van de JWT token. Deze wordt gebruikt binnen spring security
                 // Wachtwoord is niet nodig omdat wij willen controleren of deze gebruiker toegang heeft to een
