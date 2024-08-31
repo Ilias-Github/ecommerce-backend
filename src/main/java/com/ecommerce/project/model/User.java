@@ -57,4 +57,8 @@ public class User {
         this.email = email;
         this.password = password;
     }
+
+    @ToString.Exclude
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    private Cart cart;
 }
