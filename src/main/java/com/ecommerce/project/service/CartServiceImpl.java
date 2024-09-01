@@ -15,9 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Service
 public class CartServiceImpl implements ICartService {
@@ -68,31 +66,23 @@ public class CartServiceImpl implements ICartService {
         cartItemRepository.save(cartItem);
 
         // TODO: dit is toch overbodig?
+        // De quantity moet aangepast worden wanneer jet product daadwerkelijk gekocht wordt.
+        // Wat hier gebeurt is echt onzinnig
         product.setQuantity(product.getQuantity());
 
         cart.setTotalPrice(cart.getTotalPrice() + (product.getSpecialPrice() * quantity));
-        List<CartItem> userCartItems = new ArrayList<>();
-        userCartItems.add(cartItem);
-        cart.setCartItems(userCartItems);
+
         cartRepository.save(cart);
 
         CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
 
-//        List<ProductDTO> productDTOStream = cart.getCartItems().stream().map(item -> {
-//            ProductDTO map = modelMapper.map(item.getProduct(), ProductDTO.class);
-//            map.setQuantity(item.getQuantity());
-//            return map;
-//        }).toList();
-
-        List<CartItem> cartItems = cart.getCartItems();
-
-        Stream<ProductDTO> productDTOStream = cartItems.stream().map(item -> {
+        List<ProductDTO> productDTOStream = cart.getCartItems().stream().map(item -> {
             ProductDTO map = modelMapper.map(item.getProduct(), ProductDTO.class);
             map.setQuantity(item.getQuantity());
             return map;
-        });
+        }).toList();
 
-        cartDTO.setProducts(productDTOStream.toList());
+        cartDTO.setProducts(productDTOStream);
 
         return cartDTO;
     }
