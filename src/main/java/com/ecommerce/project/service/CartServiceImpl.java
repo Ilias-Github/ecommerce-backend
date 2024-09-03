@@ -56,6 +56,13 @@ public class CartServiceImpl implements ICartService {
         }).toList();
     }
 
+    @Override
+    public CartDTO getUserCart() {
+        Cart cart = createCart();
+
+        return modelMapper.map(cart, CartDTO.class);
+    }
+
     public CartDTO addProductToCart(Long productId, int quantity) {
         // Huidige cart ophalen van de ingelogde user
         Cart cart = createCart();
