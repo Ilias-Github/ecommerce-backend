@@ -185,10 +185,13 @@ public class CartServiceImpl implements ICartService {
 
     @Override
     public CartDTO deleteProductFromCart(Long productId) {
-        // TODO: vervangen met het ophalen van de cart, een cart hoeft niet aangemaakt te worden wanneer je iets uit de cart wilt verwijderen
-        Cart cart = createCart();
+        Cart cart = cartRepository.findCartByUserEmail(authUtils.getLoggedInUser().getEmail());
 
         CartItem cartItem = cartItemRepository.findCartItemByCartIdAndProductId(cart.getId(), productId);
+
+        if (cartItem == null) {
+            throw new ResourceNotFoundException("Product", "productId", productId);
+        }
 
         cartItemRepository.delete(cartItem);
         // TODO: Zet de nieuwe total price
