@@ -78,7 +78,7 @@ public class CartServiceImpl implements ICartService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
-        // Cart moet aangevuld worden met een cartItem
+        // Check of het cartItem al bestaat
         CartItem cartItem = cartItemRepository.findCartItemByCartIdAndProductId(cart.getId(), productId);
 
         // TODO: update quantity als product al in de cart bestaat
@@ -94,6 +94,7 @@ public class CartServiceImpl implements ICartService {
             throw new APIException("Please, make an order of the " + product.getProductName() + " less than or equal to the quantity " + product.getQuantity());
         }
 
+        // Creeer een cart item als de user het item nog niet in de cart heeft
         cartItem = new CartItem();
 
         cartItem.setProduct(product);
@@ -124,6 +125,35 @@ public class CartServiceImpl implements ICartService {
         cartDTO.setProducts(productDTOStream);
 
         return cartDTO;
+    }
+
+    @Override
+    public CartDTO updateCartQuantity(Long productId, int quantity) {
+        Cart cart = createCart();
+
+        // Vind het cartitem dat overeenkomt met het product
+        CartItem cartItem = cart.getCartItems()
+                .stream()
+                .filter(item -> item.getProduct().getProductId().equals(productId))
+                .findAny()
+                .orElseThrow(() -> new APIException("Product not part of the list"));
+
+        System.out.println("141");
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+
+        if (product.getQuantity() < quantity + cartItem.getQuantity()) {
+            throw new APIException("Quantity exceeds available product quantity");
+        }
+
+        cartItem.setQuantity(cartItem.getQuantity() + quantity);
+        // 1. Check of er genoeg kwantiteit is door het aantal in de cart + de nieuwe kwantieit te vergelijken met de
+        // kwantiteit van de Product class
+
+        cartItemRepository.save(cartItem);
+
+        // update de huidige kwantiteit van je winkelmandje
+        return modelMapper.map(cart, CartDTO.class);
     }
 
     private Cart createCart() {

@@ -10,4 +10,6 @@ public interface ICartService {
     CartDTO getUserCart();
 
     CartDTO addProductToCart(Long productId, int quantity);
+
+    CartDTO updateCartQuantity(Long productId, int quantity);
 }

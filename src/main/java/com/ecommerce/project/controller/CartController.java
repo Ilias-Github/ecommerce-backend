@@ -28,6 +28,12 @@ public class CartController {
         return new ResponseEntity<>(cartDTO, HttpStatus.FOUND);
     }
 
+    @PutMapping("/cart/products/{productId}/quantity/{quantity}")
+    public ResponseEntity<CartDTO> updateCartProduct(@PathVariable Long productId, @PathVariable int quantity) {
+        CartDTO cartDTO = cartService.updateCartQuantity(productId, quantity);
+        return new ResponseEntity<>(cartDTO, HttpStatus.OK);
+    }
+
     @PostMapping("/carts/products/{productId}/quantity/{quantity}")
     public ResponseEntity<CartDTO> addProductToCart(@PathVariable Long productId, @PathVariable int quantity) {
         CartDTO cartDTO = cartService.addProductToCart(productId, quantity);
