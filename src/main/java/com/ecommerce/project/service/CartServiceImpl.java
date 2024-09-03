@@ -144,6 +144,15 @@ public class CartServiceImpl implements ICartService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
         if (product.getQuantity() < quantity + cartItem.getQuantity()) {
+        if (cartItem == null) {
+            cartItem = new CartItem();
+
+            cartItem.setProduct(product);
+            cartItem.setQuantity(quantity);
+            cartItem.setProductPrice(product.getSpecialPrice());
+            cartItem.setDiscount(product.getDiscount());
+            cartItem.setCart(cart);
+        }
             throw new APIException("Quantity exceeds available product quantity");
         }
 
