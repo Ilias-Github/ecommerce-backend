@@ -129,16 +129,17 @@ public class CartServiceImpl implements ICartService {
 
     @Override
     public CartDTO updateCartQuantity(Long productId, int quantity) {
+        // Haal de cart op
         Cart cart = createCart();
 
-        // Vind het cartitem dat overeenkomt met het product
+        // Vind het cartItem van de huidige user dat overeenkomt met het product
         CartItem cartItem = cart.getCartItems()
                 .stream()
                 .filter(item -> item.getProduct().getProductId().equals(productId))
                 .findAny()
                 .orElseThrow(() -> new APIException("Product not part of the list"));
 
-        System.out.println("141");
+        // Haal het product op waarvan de quantity gecontroleerd dient te worden
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
@@ -146,10 +147,11 @@ public class CartServiceImpl implements ICartService {
             throw new APIException("Quantity exceeds available product quantity");
         }
 
+        // Update de quantity van de cartitem dat verbonden is met de cart van de user
         cartItem.setQuantity(cartItem.getQuantity() + quantity);
-        // 1. Check of er genoeg kwantiteit is door het aantal in de cart + de nieuwe kwantieit te vergelijken met de
-        // kwantiteit van de Product class
+        cart.setTotalPrice(cart.getTotalPrice() + product.getSpecialPrice() * quantity);
 
+        // TODO: Voeg de producten toe aan de cartdto zodat de producten te zien zijn in de response
         cartItemRepository.save(cartItem);
 
         // update de huidige kwantiteit van je winkelmandje
