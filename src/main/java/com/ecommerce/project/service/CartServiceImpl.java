@@ -58,9 +58,16 @@ public class CartServiceImpl implements ICartService {
 
     @Override
     public CartDTO getUserCart() {
+        // TODO: moet ik een cart aanmaken als deze niet bestaat?
         Cart cart = createCart();
 
-        return modelMapper.map(cart, CartDTO.class);
+        List<ProductDTO> productDTOS = cart.getCartItems().stream().map(product -> modelMapper.map(product, ProductDTO.class)).toList();
+
+        CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+
+        cartDTO.setProducts(productDTOS);
+
+        return cartDTO;
     }
 
     public CartDTO addProductToCart(Long productId, int quantity) {
