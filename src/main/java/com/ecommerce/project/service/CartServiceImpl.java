@@ -157,10 +157,14 @@ public class CartServiceImpl implements ICartService {
             throw new APIException("Quantity exceeds available product quantity");
         }
 
-        // Update de quantity van de cartitem dat verbonden is met de cart van de user
-        cartItem.setQuantity(cartItem.getQuantity() + quantity);
-        cart.setTotalPrice(cart.getTotalPrice() + product.getSpecialPrice() * quantity);
+        // TODO: Verwijder product uit cart wanneer quantity op 0 wordt gezet
+        if (quantity < 0) {
+            throw new APIException("Quantity can't be lower than 0");
+        }
 
+        // Update de quantity van de cartitem dat verbonden is met de cart van de user
+        cartItem.setQuantity(quantity);
+        // TODO: automatisch prijs uitrekenen van de cart
         // TODO: Voeg de producten toe aan de cartdto zodat de producten te zien zijn in de response
         cartItemRepository.save(cartItem);
 
