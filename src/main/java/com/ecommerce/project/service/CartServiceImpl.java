@@ -31,6 +31,31 @@ public class CartServiceImpl implements ICartService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Override
+    public List<CartDTO> getAllCarts() {
+        List<Cart> carts = cartRepository.findAll();
+
+        if (carts.isEmpty()) {
+            throw new APIException("No carts exist yet");
+        }
+
+        // De gevonden cart objects omzetten naar een CartDTO zodat deze teruggestuurd kan worden naar de client
+        // TODO: map beter onderzoeken
+        // Elke cart dient individueel behandelt te worden. Daarom moet deze gemapped worden
+        // Map zorgt er ook voor dat een array omgezet kan worden naar een nieuwe array met minder code
+        return carts.stream().map(cart -> {
+            CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+
+            // De cartDTO verwacht een lijst aan ProductDTOs. Uit de database is een lijst aan Products opgehaald
+            List<ProductDTO> products = cart.getCartItems()
+                    .stream().map(product -> modelMapper.map(product.getProduct(), ProductDTO.class)).toList();
+
+            cartDTO.setProducts(products);
+
+            return cartDTO;
+        }).toList();
+    }
+
     public CartDTO addProductToCart(Long productId, int quantity) {
         // Huidige cart ophalen van de ingelogde user
         Cart cart = createCart();
