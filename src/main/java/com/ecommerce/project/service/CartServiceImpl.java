@@ -11,6 +11,7 @@ import com.ecommerce.project.repositories.ICartItemRepository;
 import com.ecommerce.project.repositories.ICartRepository;
 import com.ecommerce.project.repositories.IProductRepository;
 import com.ecommerce.project.util.AuthUtils;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -127,6 +128,9 @@ public class CartServiceImpl implements ICartService {
         return cartDTO;
     }
 
+    // Om de integriteit van de data te behouden indien de functie niet volledig wordt uitgevoerd, wil je dat alle
+    // veranderingen teruggedraaid worden. Daarvoor is de @Transactional annotation
+    @Transactional
     @Override
     public CartDTO updateCartQuantity(Long productId, int quantity) {
         // Haal de cart op
