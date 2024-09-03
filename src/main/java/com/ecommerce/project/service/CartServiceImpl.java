@@ -168,8 +168,19 @@ public class CartServiceImpl implements ICartService {
         // TODO: Voeg de producten toe aan de cartdto zodat de producten te zien zijn in de response
         cartItemRepository.save(cartItem);
 
-        // update de huidige kwantiteit van je winkelmandje
-        return modelMapper.map(cart, CartDTO.class);
+        // TODO: method voor schrijven? (volgens mij gebeurt dit vaker in deze class)
+        CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+        List<CartItem> cartItems = cart.getCartItems();
+
+        List<ProductDTO> productDTOStream = cartItems.stream().map(item -> {
+            ProductDTO prd = modelMapper.map(item.getProduct(), ProductDTO.class);
+            prd.setQuantity(item.getQuantity());
+            return prd;
+        }).toList();
+
+        cartDTO.setProducts(productDTOStream);
+
+        return cartDTO;
     }
 
     private Cart createCart() {
