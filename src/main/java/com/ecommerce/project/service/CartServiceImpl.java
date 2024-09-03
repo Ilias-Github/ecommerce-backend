@@ -183,6 +183,19 @@ public class CartServiceImpl implements ICartService {
         return cartDTO;
     }
 
+    @Override
+    public CartDTO deleteProductFromCart(Long productId) {
+        // TODO: vervangen met het ophalen van de cart, een cart hoeft niet aangemaakt te worden wanneer je iets uit de cart wilt verwijderen
+        Cart cart = createCart();
+
+        CartItem cartItem = cartItemRepository.findCartItemByCartIdAndProductId(cart.getId(), productId);
+
+        cartItemRepository.delete(cartItem);
+        // TODO: Zet de nieuwe total price
+        return modelMapper.map(cart, CartDTO.class);
+    }
+
+    // TODO: controleren of dit nodig is
     private Cart createCart() {
         // Zoek de cart op van de ingelogde user zodat deze geupdate kan worden
         Cart userCart = cartRepository.findCartByUserEmail(authUtils.getLoggedInUser().getEmail());
