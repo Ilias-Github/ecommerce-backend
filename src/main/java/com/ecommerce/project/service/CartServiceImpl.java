@@ -133,17 +133,12 @@ public class CartServiceImpl implements ICartService {
         Cart cart = createCart();
 
         // Vind het cartItem van de huidige user dat overeenkomt met het product
-        CartItem cartItem = cart.getCartItems()
-                .stream()
-                .filter(item -> item.getProduct().getProductId().equals(productId))
-                .findAny()
-                .orElseThrow(() -> new APIException("Product not part of the list"));
+        CartItem cartItem = cartItemRepository.findCartItemByCartIdAndProductId(cart.getId(), productId);
 
         // Haal het product op waarvan de quantity gecontroleerd dient te worden
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
-        if (product.getQuantity() < quantity + cartItem.getQuantity()) {
         if (cartItem == null) {
             cartItem = new CartItem();
 
@@ -153,6 +148,8 @@ public class CartServiceImpl implements ICartService {
             cartItem.setDiscount(product.getDiscount());
             cartItem.setCart(cart);
         }
+
+        if (quantity > product.getQuantity()) {
             throw new APIException("Quantity exceeds available product quantity");
         }
 
