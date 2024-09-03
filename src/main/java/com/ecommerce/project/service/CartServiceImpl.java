@@ -62,10 +62,12 @@ public class CartServiceImpl implements ICartService {
         // TODO: moet ik een cart aanmaken als deze niet bestaat?
         Cart cart = createCart();
 
-        List<ProductDTO> productDTOS = cart.getCartItems().stream().map(product -> modelMapper.map(product, ProductDTO.class)).toList();
+        List<ProductDTO> productDTOS = cart.getCartItems().stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class)).toList();
 
         CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
 
+        // TODO: fix description van product
         cartDTO.setProducts(productDTOS);
 
         return cartDTO;
@@ -183,6 +185,7 @@ public class CartServiceImpl implements ICartService {
         return cartDTO;
     }
 
+    @Transactional
     @Override
     public CartDTO deleteProductFromCart(Long productId) {
         Cart cart = cartRepository.findCartByUserEmail(authUtils.getLoggedInUser().getEmail());
