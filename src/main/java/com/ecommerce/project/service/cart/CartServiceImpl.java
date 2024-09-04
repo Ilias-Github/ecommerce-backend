@@ -185,6 +185,36 @@ public class CartServiceImpl implements ICartService {
         return cartDTO;
     }
 
+    @Override
+    public void updateProductInCarts(Long cartId, Long productId) {
+        // Haal de cart op
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new ResourceNotFoundException("Cart", "cartId", cartId));
+
+        // Haal het geupdatet product op
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+
+        // Haal het cartItem op dat geupdatet dient te worden
+        CartItem cartItem = cartItemRepository.findCartItemByCartIdAndProductId(cartId, productId);
+
+        // TODO: Kan hier niet een orElseThrow van gemaakt worden?
+        if (cartItem == null) {
+            throw new APIException("Product" + product.getProductName() + " not found");
+        }
+
+        // TODO: in de tutorial zat dit onder de double, klopt dit wel? Moet het niet zoals het er nu staat?
+        cartItem.setProductPrice(product.getSpecialPrice());
+
+        // Zet de nieuwe total cart price aan de hand van het geupdatet product
+        double cartPrice = cart.getTotalPrice() - (cartItem.getProductPrice() * cartItem.getQuantity());
+
+        // Zet de nieuwe cart price
+        cart.setTotalPrice(cartPrice + (cartItem.getProductPrice() * cartItem.getQuantity()));
+
+        cartItemRepository.save(cartItem);
+    }
+
     @Transactional
     @Override
     public CartDTO deleteProductFromCart(Long productId) {

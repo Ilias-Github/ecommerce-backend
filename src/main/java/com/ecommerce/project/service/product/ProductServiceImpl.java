@@ -2,12 +2,16 @@ package com.ecommerce.project.service.product;
 
 import com.ecommerce.project.exceptions.APIException;
 import com.ecommerce.project.exceptions.ResourceNotFoundException;
+import com.ecommerce.project.model.Cart;
 import com.ecommerce.project.model.Category;
 import com.ecommerce.project.model.Product;
+import com.ecommerce.project.payload.CartDTO;
 import com.ecommerce.project.payload.product.ProductDTO;
 import com.ecommerce.project.payload.product.ProductResponse;
+import com.ecommerce.project.repositories.ICartRepository;
 import com.ecommerce.project.repositories.ICategoryRepository;
 import com.ecommerce.project.repositories.IProductRepository;
+import com.ecommerce.project.service.cart.ICartService;
 import com.ecommerce.project.service.file.IFileService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +34,10 @@ public class ProductServiceImpl implements IProductService {
     private IProductRepository productRepository;
     @Autowired
     private ICategoryRepository categoryRepository;
+    @Autowired
+    private ICartRepository cartRepository;
+    @Autowired
+    private ICartService cartService;
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
@@ -161,6 +169,28 @@ public class ProductServiceImpl implements IProductService {
         product.setSpecialPrice(specialPrice);
 
         Product savedProduct = productRepository.save(product);
+
+        // Haal alle carts op die dit product bevat
+        List<Cart> carts = cartRepository.findCartsByProductId(productId);
+
+        // Zet alle carts om naar cart dtos
+        List<CartDTO> cartDTOs = carts.stream().map(cart -> {
+            CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+
+            // Zet de cartItems van een cart om in een lijst van producten
+            List<ProductDTO> products = cart.getCartItems()
+                    .stream()
+                    .map(p -> modelMapper.map(p.getProduct(), ProductDTO.class))
+                    .toList();
+
+            // Zet de lijst aan producten in de cartDTO
+            cartDTO.setProducts(products);
+
+            return cartDTO;
+        }).toList();
+
+        // Update elke cart met het geupdatet product
+        cartDTOs.forEach(cart -> cartService.updateProductInCarts(cart.getCartId(), productId));
 
         return modelMapper.map(savedProduct, ProductDTO.class);
     }
