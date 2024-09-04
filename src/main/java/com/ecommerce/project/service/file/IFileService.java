@@ -1,4 +1,4 @@
-package com.ecommerce.project.service;
+package com.ecommerce.project.service.file;
 
 import org.springframework.web.multipart.MultipartFile;
 

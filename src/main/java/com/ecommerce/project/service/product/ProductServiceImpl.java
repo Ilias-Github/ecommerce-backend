@@ -8,7 +8,7 @@ import com.ecommerce.project.payload.product.ProductDTO;
 import com.ecommerce.project.payload.product.ProductResponse;
 import com.ecommerce.project.repositories.ICategoryRepository;
 import com.ecommerce.project.repositories.IProductRepository;
-import com.ecommerce.project.service.IFileService;
+import com.ecommerce.project.service.file.IFileService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
