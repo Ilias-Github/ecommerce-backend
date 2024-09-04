@@ -200,6 +200,11 @@ public class ProductServiceImpl implements IProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
 
+        // Voordat het product uit de database verdwijnt, moeten de carts die het product bevatten eerst updatet worden.
+        // Anders krijg je carts met foreign keys die nergens naartoe leiden
+        List<Cart> carts = cartRepository.findCartsByProductId(productId);
+        carts.forEach(cart -> cartService.deleteProductFromCart(productId));
+
         productRepository.deleteById(productId);
 
         return modelMapper.map(product, ProductDTO.class);
