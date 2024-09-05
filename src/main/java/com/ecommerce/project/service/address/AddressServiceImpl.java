@@ -59,7 +59,15 @@ public class AddressServiceImpl implements IAddressService {
         if (addresses.isEmpty()) {
             throw new APIException("No addresses exist yet");
         }
-        
+
         return addresses.stream().map(address -> modelMapper.map(address, AddressDTO.class)).toList();
+    }
+
+    @Override
+    public AddressDTO getAddressById(Long addressId) {
+        Address address = addressRepository.findById(addressId)
+                .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
+
+        return modelMapper.map(address, AddressDTO.class);
     }
 }

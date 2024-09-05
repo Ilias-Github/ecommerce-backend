@@ -23,6 +23,13 @@ public class AddressController {
         return new ResponseEntity<>(addressDTOs, HttpStatus.OK);
     }
 
+    @GetMapping("/addresses/{addressId}")
+    public ResponseEntity<AddressDTO> getAddressById(@PathVariable Long addressId) {
+        AddressDTO addressDTO = addressService.getAddressById(addressId);
+        return new ResponseEntity<>(addressDTO, HttpStatus.OK);
+    }
+
+
     @PostMapping("/address")
     public ResponseEntity<AddressDTO> createAddress(@Valid @RequestBody AddressDTO addressDTO) {
         AddressDTO savedAddressDTO = addressService.createAddress(addressDTO);

@@ -12,4 +12,6 @@ public interface IAddressService {
     AddressDTO deleteAddress(Long addressId);
 
     List<AddressDTO> getAllAddresses();
+
+    AddressDTO getAddressById(Long addressId);
 }
