@@ -1,6 +1,7 @@
 package com.ecommerce.project.service.address;
 
 import com.ecommerce.project.exceptions.APIException;
+import com.ecommerce.project.exceptions.ResourceNotFoundException;
 import com.ecommerce.project.model.Address;
 import com.ecommerce.project.payload.AddressDTO;
 import com.ecommerce.project.repositories.IAddressRepository;
@@ -35,6 +36,16 @@ public class AddressServiceImpl implements IAddressService {
         address.setCity(addressDTO.getCity());
 
         addressRepository.save(address);
+
+        return modelMapper.map(address, AddressDTO.class);
+    }
+
+    @Override
+    public AddressDTO deleteAddress(Long addressId) {
+        Address address = addressRepository.findById(addressId)
+                .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
+
+        addressRepository.delete(address);
 
         return modelMapper.map(address, AddressDTO.class);
     }
