@@ -5,11 +5,13 @@ import com.ecommerce.project.exceptions.ResourceNotFoundException;
 import com.ecommerce.project.model.Address;
 import com.ecommerce.project.payload.AddressDTO;
 import com.ecommerce.project.repositories.IAddressRepository;
+import com.ecommerce.project.util.AuthUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class AddressServiceImpl implements IAddressService {
@@ -17,6 +19,8 @@ public class AddressServiceImpl implements IAddressService {
     IAddressRepository addressRepository;
     @Autowired
     ModelMapper modelMapper;
+    @Autowired
+    AuthUtils authUtils;
 
     @Override
     public AddressDTO createAddress(AddressDTO addressDTO) {
@@ -77,7 +81,6 @@ public class AddressServiceImpl implements IAddressService {
 
         System.out.println(addresses);
         System.out.println(authUtils.getLoggedInUser());
-//        List<Address> addresses = addressRepository.findAllAddressesByEmail(authUtils.getLoggedInUser().getEmail());
 
         if (addresses.isEmpty()) {
             throw new APIException("User doesn't have any addresses yet");
