@@ -14,4 +14,6 @@ public interface IAddressService {
     List<AddressDTO> getAllAddresses();
 
     AddressDTO getAddressById(Long addressId);
+
+    AddressDTO updateAddress(AddressDTO addressDTO, Long addressId);
 }

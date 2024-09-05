@@ -70,4 +70,20 @@ public class AddressServiceImpl implements IAddressService {
 
         return modelMapper.map(address, AddressDTO.class);
     }
+
+    @Override
+    public AddressDTO updateAddress(AddressDTO addressDTO, Long addressId) {
+        Address address = addressRepository.findById(addressId)
+                .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
+
+        address.setStreetName(addressDTO.getStreetName());
+        address.setHouseNumber(addressDTO.getHouseNumber());
+        address.setZipcode(addressDTO.getZipcode());
+        address.setCity(addressDTO.getCity());
+        address.setApartmentNumber(addressDTO.getApartmentNumber());
+
+        addressRepository.save(address);
+
+        return modelMapper.map(address, AddressDTO.class);
+    }
 }
