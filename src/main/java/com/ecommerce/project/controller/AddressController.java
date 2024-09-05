@@ -9,11 +9,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/api/auth")
 public class AddressController {
     @Autowired
     private IAddressService addressService;
+
+    @GetMapping("/addresses")
+    public ResponseEntity<List<AddressDTO>> getAllAddresses() {
+        List<AddressDTO> addressDTOs = addressService.getAllAddresses();
+        return new ResponseEntity<>(addressDTOs, HttpStatus.OK);
+    }
 
     @PostMapping("/address")
     public ResponseEntity<AddressDTO> createAddress(@Valid @RequestBody AddressDTO addressDTO) {

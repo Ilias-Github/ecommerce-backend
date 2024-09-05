@@ -9,6 +9,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AddressServiceImpl implements IAddressService {
     @Autowired
@@ -48,5 +50,16 @@ public class AddressServiceImpl implements IAddressService {
         addressRepository.delete(address);
 
         return modelMapper.map(address, AddressDTO.class);
+    }
+
+    @Override
+    public List<AddressDTO> getAllAddresses() {
+        List<Address> addresses = addressRepository.findAll();
+
+        if (addresses.isEmpty()) {
+            throw new APIException("No addresses exist yet");
+        }
+        
+        return addresses.stream().map(address -> modelMapper.map(address, AddressDTO.class)).toList();
     }
 }
