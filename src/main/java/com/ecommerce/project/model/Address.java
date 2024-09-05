@@ -1,6 +1,8 @@
 package com.ecommerce.project.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -23,14 +25,14 @@ public class Address {
     @Size(min = 5, message = "Street name must be at least 5 characters")
     private String streetName;
 
-    @NotBlank
-    @Size(max = 4, message = "House number should not exceed 4 characters")
+    @Min(value = 1, message = "House number cant be 0 or negative")
+    @Max(value = 9999, message = "House number cant exceed 9999")
     private int houseNumber;
 
     private String apartmentNumber;
 
     @NotBlank
-    @Size(min = 6, max = 6, message = "Zipcode must be 6 characters")
+    @Size(min = 6, max = 6, message = "Zipcode must be exactly 6 characters")
     private String zipcode;
 
     @NotBlank
