@@ -21,7 +21,7 @@ public class Address {
 
     @NotBlank
     @Size(min = 5, message = "Street name must be at least 5 characters")
-    private String street;
+    private String streetName;
 
     @NotBlank
     @Size(max = 4, message = "House number should not exceed 4 characters")
@@ -41,8 +41,8 @@ public class Address {
     @ManyToMany
     private List<User> users;
 
-    public Address(String street, int houseNumber, String apartmentNumber, String zipcode, String city) {
-        this.street = street;
+    public Address(String streetName, int houseNumber, String apartmentNumber, String zipcode, String city) {
+        this.streetName = streetName;
         this.houseNumber = houseNumber;
         this.apartmentNumber = apartmentNumber;
         this.zipcode = zipcode;
