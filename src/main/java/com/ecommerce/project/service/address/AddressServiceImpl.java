@@ -72,6 +72,21 @@ public class AddressServiceImpl implements IAddressService {
     }
 
     @Override
+    public List<AddressDTO> getAllAddressesByUser() {
+        Set<Address> addresses = authUtils.getLoggedInUser().getAddresses();
+
+        System.out.println(addresses);
+        System.out.println(authUtils.getLoggedInUser());
+//        List<Address> addresses = addressRepository.findAllAddressesByEmail(authUtils.getLoggedInUser().getEmail());
+
+        if (addresses.isEmpty()) {
+            throw new APIException("User doesn't have any addresses yet");
+        }
+
+        return addresses.stream().map(address -> modelMapper.map(address, AddressDTO.class)).toList();
+    }
+
+    @Override
     public AddressDTO updateAddress(AddressDTO addressDTO, Long addressId) {
         Address address = addressRepository.findById(addressId)
                 .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
