@@ -58,6 +58,7 @@ public class User {
         this.password = password;
     }
 
+    // Exclude van het user object bij het ophalen van de user
     @ToString.Exclude
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private Cart cart;
