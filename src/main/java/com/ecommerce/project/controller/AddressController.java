@@ -30,7 +30,7 @@ public class AddressController {
     }
 
     @GetMapping("users/addresses")
-    public ResponseEntity<List<AddressDTO>> getAllAddressesByUser() {
+    public ResponseEntity<List<AddressDTO>> getUserAddresses() {
         List<AddressDTO> addressDTOs = addressService.getAllAddressesByUser();
         return new ResponseEntity<>(addressDTOs, HttpStatus.OK);
     }

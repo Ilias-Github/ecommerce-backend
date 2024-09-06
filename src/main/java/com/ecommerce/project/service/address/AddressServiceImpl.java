@@ -96,9 +96,6 @@ public class AddressServiceImpl implements IAddressService {
     public List<AddressDTO> getAllAddressesByUser() {
         Set<Address> addresses = authUtils.getLoggedInUser().getAddresses();
 
-        System.out.println(addresses);
-        System.out.println(authUtils.getLoggedInUser());
-
         if (addresses.isEmpty()) {
             throw new APIException("User doesn't have any addresses yet");
         }
