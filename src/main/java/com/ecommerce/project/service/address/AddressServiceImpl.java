@@ -60,6 +60,14 @@ public class AddressServiceImpl implements IAddressService {
         Address address = addressRepository.findById(addressId)
                 .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
 
+        // De owner van de many-to-many relatie (de user) moet eerst bijgewerkt worden. Dit betekent dat het address
+        // eerst verwijderd dient te worden bij de user. Daarna kan het adres verwijderd worden uit de database
+        User user = authUtils.getLoggedInUser();
+
+        Set<Address> addresses = user.getAddresses();
+        addresses.remove(address);
+        user.setAddresses(addresses);
+
         addressRepository.delete(address);
 
         return "Address successfully deleted with addressId " + addressId;
