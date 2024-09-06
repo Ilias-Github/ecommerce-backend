@@ -9,7 +9,7 @@ import java.util.List;
 public interface IAddressService {
     AddressDTO createAddress(AddressDTO addressDTO);
 
-    AddressDTO deleteAddress(Long addressId);
+    String deleteAddress(Long addressId);
 
     List<AddressDTO> getAllAddresses();
 

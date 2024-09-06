@@ -56,13 +56,13 @@ public class AddressServiceImpl implements IAddressService {
     }
 
     @Override
-    public AddressDTO deleteAddress(Long addressId) {
+    public String deleteAddress(Long addressId) {
         Address address = addressRepository.findById(addressId)
                 .orElseThrow(() -> new ResourceNotFoundException("Address", "addressId", addressId));
 
         addressRepository.delete(address);
 
-        return modelMapper.map(address, AddressDTO.class);
+        return "Address successfully deleted with addressId " + addressId;
     }
 
     @Override
