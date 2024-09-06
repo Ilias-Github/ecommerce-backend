@@ -28,6 +28,9 @@ public class Order {
 
     private LocalDate orderDate;
 
+    @OneToOne
+    private Payment payment;
+
     private double totalAmount;
     private String orderStatus;
 
