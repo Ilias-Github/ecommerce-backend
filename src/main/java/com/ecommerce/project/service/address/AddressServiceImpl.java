@@ -3,6 +3,7 @@ package com.ecommerce.project.service.address;
 import com.ecommerce.project.exceptions.APIException;
 import com.ecommerce.project.exceptions.ResourceNotFoundException;
 import com.ecommerce.project.model.Address;
+import com.ecommerce.project.model.User;
 import com.ecommerce.project.payload.AddressDTO;
 import com.ecommerce.project.repositories.IAddressRepository;
 import com.ecommerce.project.util.AuthUtils;
@@ -24,6 +25,7 @@ public class AddressServiceImpl implements IAddressService {
 
     @Override
     public AddressDTO createAddress(AddressDTO addressDTO) {
+        // Controleer eerst of het adres bestaat
         int houseNumber = addressDTO.getHouseNumber();
         String zipcode = addressDTO.getZipcode();
         String addressNumber = addressDTO.getApartmentNumber();
@@ -34,16 +36,23 @@ public class AddressServiceImpl implements IAddressService {
             throw new APIException("Address already exists");
         }
 
-        address = new Address();
-        address.setStreetName(addressDTO.getStreetName());
-        address.setHouseNumber(addressDTO.getHouseNumber());
-        address.setApartmentNumber(addressDTO.getApartmentNumber());
-        address.setZipcode(addressDTO.getZipcode());
-        address.setCity(addressDTO.getCity());
+        // Haal ingelogde user op
+        User user = authUtils.getLoggedInUser();
+        // Converteer de addressDTO naar een address object
+        address = modelMapper.map(addressDTO, Address.class);
 
-        addressRepository.save(address);
+        // Haal de adressen op van de ingelogde user. Deze moet bijgewerkt worden zodat de link in de tussen tabel
+        // aangemaakt kan worden
+        Set<Address> addresses = user.getAddresses();
+        // Voeg het nieuwe adres toe aan de lijst van adressen van de user
+        addresses.add(address);
+        // Sla de nieuwe lijst aan adressen op in het user object
+        user.setAddresses(addresses);
 
-        return modelMapper.map(address, AddressDTO.class);
+        // Sla het adres op in de database
+        Address savedAddress = addressRepository.save(address);
+
+        return modelMapper.map(savedAddress, AddressDTO.class);
     }
 
     @Override
