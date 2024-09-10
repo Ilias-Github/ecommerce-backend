@@ -48,10 +48,11 @@ public class CartServiceImpl implements ICartService {
             CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
 
             // De cartDTO verwacht een lijst aan ProductDTOs. Uit de database is een lijst aan Products opgehaald
-            List<ProductDTO> products = cart.getCartItems()
-                    .stream().map(product -> modelMapper.map(product.getProduct(), ProductDTO.class)).toList();
+            List<ProductDTO> productDTOS = cart.getCartItems().stream()
+                    .map(product -> modelMapper.map(product, ProductDTO.class)).toList();
 
-            cartDTO.setProducts(products);
+
+            cartDTO.setProducts(productDTOS);
 
             return cartDTO;
         }).toList();
