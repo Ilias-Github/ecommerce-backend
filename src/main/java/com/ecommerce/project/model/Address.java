@@ -39,6 +39,7 @@ public class Address {
     @Size(min = 5, message = "City name must be at least 5 characters")
     private String city;
 
+    // TODO: Alle lists initaliseren?
     @ToString.Exclude
     @ManyToMany(mappedBy = "addresses")
     private List<User> users;

@@ -215,6 +215,8 @@ public class CartServiceImpl implements ICartService {
         cartItemRepository.save(cartItem);
     }
 
+
+    // TODO: Geen een string terug met dat het gelukt is
     @Transactional
     @Override
     public CartDTO deleteProductFromCart(Long productId) {
