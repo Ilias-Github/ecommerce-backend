@@ -40,6 +40,9 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public List<OrderDTO> getAllOrders() {
         List<Order> orders = orderRepository.findAll();
+
+        if (orders.isEmpty()) throw new APIException("No orders are placed yet");
+
         return orders.stream().map(order -> modelMapper.map(order, OrderDTO.class)).toList();
     }
 
