@@ -37,6 +37,12 @@ public class OrderServiceImpl implements IOrderService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Override
+    public List<OrderDTO> getAllOrders() {
+        List<Order> orders = orderRepository.findAll();
+        return orders.stream().map(order -> modelMapper.map(order, OrderDTO.class)).toList();
+    }
+
     @Transactional
     @Override
     public OrderDTO placeOrder(
