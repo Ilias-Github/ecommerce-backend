@@ -60,9 +60,7 @@ public class OrderServiceImpl implements IOrderService {
 
         // Vind de cart van de ingelogde user. Een cart moet namelijk omgezet worden naar een order
         Cart cart = cartRepository.findCartByUserEmail(user.getEmail());
-        if (cart == null) {
-            throw new ResourceNotFoundException("Cart", "email", user.getEmail());
-        }
+        if (cart == null) throw new ResourceNotFoundException("Cart", "email", user.getEmail());
 
         // Kijk of het adres bestaat wat meegegeven wordt
         Address address = addressRepository.findById(addressId)
@@ -120,6 +118,8 @@ public class OrderServiceImpl implements IOrderService {
             cartService.deleteProductFromCart(item.getProduct().getProductId());
         });
 
+        cartRepository.delete(cart);
+
         // Converteer de order naar een DTO en sla elk orderItem op in de dto
         OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
         orderItems.forEach(item -> {
@@ -129,6 +129,7 @@ public class OrderServiceImpl implements IOrderService {
         });
 
         orderDTO.setAddressId(addressId);
+
         return orderDTO;
     }
 }
